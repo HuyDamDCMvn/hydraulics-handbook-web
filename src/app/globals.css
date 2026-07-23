@@ -1,26 +1,130 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f3efe6;
+  --paper-deep: #e8e1d4;
+  --ink: #1a2330;
+  --ink-muted: #4a5564;
+  --accent: #0d6e6e;
+  --accent-soft: #d7ecec;
+  --line: #c9c0b0;
+  --note: #fff8e8;
+  --danger: #8b3a2f;
+  --background: var(--paper);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-line: var(--line);
+  --color-note: var(--note);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(ellipse 120% 80% at 10% -10%, #efe8da 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 100% 0%, #dfeceb 0%, transparent 45%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-deep) 100%);
+  color: var(--ink);
+  font-family: var(--font-sans), "Source Sans 3", Georgia, serif;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), "Libre Baskerville", Georgia, serif;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.prose-measure {
+  max-width: 72ch;
+}
+
+.eq-block {
+  overflow-x: auto;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--accent);
+  background: color-mix(in srgb, white 55%, var(--paper));
+  margin: 0.75rem 0;
+}
+
+.eq-block:target,
+.eq-block.highlight {
+  background: var(--accent-soft);
+  outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.callout-note {
+  background: var(--note);
+  border: 1px solid var(--line);
+  padding: 1rem 1.15rem;
+  margin: 1rem 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, white 70%, transparent);
+}
+
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.table-wrap th,
+.table-wrap td {
+  text-align: left;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.table-wrap th {
+  background: color-mix(in srgb, var(--paper-deep) 80%, white);
+  font-weight: 600;
+}
+
+.katex-display {
+  margin: 0.4rem 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
