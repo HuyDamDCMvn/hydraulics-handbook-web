@@ -187,29 +187,43 @@ export function MinorLossScene() {
   );
 }
 
-/** Hazen–Williams water-main T-junction. */
+/** Hazen–Williams water-main T-junction (branch upward for camera readability). */
 export function HazenScene() {
   const main = linePath(new THREE.Vector3(-1.9, 0, 0), new THREE.Vector3(1.9, 0, 0));
-  const branch = linePath(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 1.5));
+  const branch = linePath(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 1.45, 0));
 
   return (
-    <SceneShell label="Hazen–Williams" camera={[4, 2.6, 4]}>
+    <SceneShell label="Hazen–Williams" camera={[4.2, 2.8, 4.2]}>
       <mesh rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.28, 0.28, 3.8, 24]} />
-        <meshStandardMaterial color={PIPE} metalness={0.22} roughness={0.5} />
+        <meshStandardMaterial
+          color={PIPE}
+          metalness={0.22}
+          roughness={0.5}
+          transparent
+          opacity={0.7}
+          depthWrite={false}
+        />
       </mesh>
-      <mesh position={[0, 0, 0.75]} rotation={[Math.PI / 2, 0, 0]}>
+      <mesh position={[0, 0.75, 0]}>
         <cylinderGeometry args={[0.24, 0.24, 1.5, 22]} />
-        <meshStandardMaterial color="#2f7a82" metalness={0.22} roughness={0.5} />
+        <meshStandardMaterial
+          color="#2f7a82"
+          metalness={0.22}
+          roughness={0.5}
+          transparent
+          opacity={0.7}
+          depthWrite={false}
+        />
       </mesh>
       {/* T fitting */}
       <mesh>
-        <boxGeometry args={[0.7, 0.55, 0.55]} />
+        <boxGeometry args={[0.65, 0.55, 0.55]} />
         <meshStandardMaterial color="#356870" metalness={0.3} roughness={0.4} />
       </mesh>
       <FlowParticles path={main} speed={0.4} count={40} color={WATER} seed={1} />
       <FlowParticles path={branch} speed={0.32} count={24} color="#7ad0e8" seed={4} />
-      <SceneLabel3D position={[0, 0.95, 0]}>Hazen–Williams</SceneLabel3D>
+      <SceneLabel3D position={[0, 1.75, 0]}>Hazen–Williams</SceneLabel3D>
     </SceneShell>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { SceneShell, SceneLabel3D } from "@/components/media/SceneShell";
-import { FlowParticles, linePath, polyPath } from "@/components/media/FlowParticles";
+import { FlowParticles, polyPath } from "@/components/media/FlowParticles";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -93,102 +93,171 @@ export function MomentumBendScene() {
   );
 }
 
-/** Centrifugal pump — power equation. */
+/** Centrifugal pump — power equation P = ρgQH/η.
+ * Side view: suction → translucent volute + impeller → vertical discharge (head). */
 export function PumpScene() {
-  const inlet = linePath(new THREE.Vector3(-1.55, -0.3, 0), new THREE.Vector3(-0.45, -0.3, 0));
-  const outlet = linePath(new THREE.Vector3(0.45, 0.35, 0), new THREE.Vector3(1.55, 0.72, 0));
-  const rise = polyPath([
-    new THREE.Vector3(-0.35, -0.25, 0),
-    new THREE.Vector3(0, 0.05, 0),
-    new THREE.Vector3(0.35, 0.3, 0),
-  ]);
+  const CX = 0;
+  const CY = 0.1;
+  const VOLUTE_R = 0.55;
+  const Y_IN = 0;
+  const X_OUT = 0.12;
+  const Y_TAKEOFF = CY + VOLUTE_R - 0.02; // flush with volute crown
+  const rIn = 0.16;
+  const rOut = 0.14;
+
+  const path = useMemo(
+    () =>
+      polyPath([
+        new THREE.Vector3(-1.7, Y_IN, 0),
+        new THREE.Vector3(-VOLUTE_R - 0.05, Y_IN, 0),
+        new THREE.Vector3(-0.2, CY, 0),
+        new THREE.Vector3(0.05, CY + 0.2, 0),
+        new THREE.Vector3(X_OUT, Y_TAKEOFF, 0),
+        new THREE.Vector3(X_OUT, 1.5, 0),
+      ]),
+    [],
+  );
 
   return (
-    <SceneShell label="P = ρgQH/η" camera={[4, 2.4, 4]}>
-      {/* volute / box housing */}
-      <mesh position={[0, 0.05, 0]}>
-        <boxGeometry args={[1.1, 0.95, 0.7]} />
-        <meshStandardMaterial color={HOUSING} metalness={0.35} roughness={0.4} />
+    <SceneShell label="P = ρgQH/η" camera={[4.2, 2.6, 5.0]}>
+      {/* Volute drum (axis toward camera) */}
+      <mesh position={[CX, CY, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[VOLUTE_R, VOLUTE_R, 0.38, 36]} />
+        <meshStandardMaterial
+          color={HOUSING}
+          metalness={0.35}
+          roughness={0.42}
+          transparent
+          opacity={0.34}
+          depthWrite={false}
+          side={THREE.DoubleSide}
+        />
       </mesh>
-      <mesh position={[0.35, 0.15, 0]}>
-        <cylinderGeometry args={[0.42, 0.5, 0.55, 20]} />
-        <meshStandardMaterial color="#355860" metalness={0.4} roughness={0.35} />
+      <mesh position={[CX, CY, 0.2]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[VOLUTE_R - 0.06, 0.03, 8, 36]} />
+        <meshStandardMaterial color="#9aadb4" metalness={0.45} roughness={0.35} />
       </mesh>
-      <SpinningImpeller position={[0.05, 0.05, 0.28]} speed={3.2} radius={0.32} />
-      {/* inlet */}
-      <mesh position={[-1.0, -0.3, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.18, 0.18, 1.2, 18]} />
-        <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.5} />
+
+      <SpinningImpeller position={[CX, CY, 0.06]} speed={3.2} radius={0.32} />
+
+      {/* Suction — meets left wall of volute */}
+      <mesh position={[-(1.05 + VOLUTE_R) / 2, Y_IN, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[rIn, rIn, 1.05 + VOLUTE_R - 0.08, 20]} />
+        <meshStandardMaterial
+          color={PIPE}
+          metalness={0.28}
+          roughness={0.48}
+          transparent
+          opacity={0.75}
+          depthWrite={false}
+        />
       </mesh>
-      {/* outlet */}
-      <mesh position={[1.0, 0.55, 0]} rotation={[0, 0, 0.35]}>
-        <cylinderGeometry args={[0.16, 0.16, 1.15, 18]} />
-        <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.5} />
+
+      {/* Discharge nozzle on volute crown + riser */}
+      <mesh position={[X_OUT, Y_TAKEOFF, 0]}>
+        <sphereGeometry args={[rOut * 1.3, 16, 16]} />
+        <meshStandardMaterial
+          color={PIPE}
+          metalness={0.3}
+          roughness={0.45}
+          transparent
+          opacity={0.82}
+          depthWrite={false}
+        />
       </mesh>
-      <FlowParticles path={inlet} speed={0.35} count={28} color={WATER} seed={1} />
-      <FlowParticles path={rise} speed={0.45} count={16} color="#7ad8f0" seed={2} />
-      <FlowParticles path={outlet} speed={0.4} count={28} color={WATER} seed={3} />
-      <SceneLabel3D position={[0, 1.25, 0]}>P = ρgQH/η</SceneLabel3D>
+      <mesh position={[X_OUT, (Y_TAKEOFF + 1.5) / 2, 0]}>
+        <cylinderGeometry args={[rOut, rOut, 1.5 - Y_TAKEOFF, 20]} />
+        <meshStandardMaterial
+          color={PIPE}
+          metalness={0.28}
+          roughness={0.48}
+          transparent
+          opacity={0.75}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <FlowParticles path={path} speed={0.4} count={56} size={0.05} color={WATER} seed={1} />
+      <SceneLabel3D position={[0.05, 1.85, 0]}>P = ρgQH/η</SceneLabel3D>
     </SceneShell>
   );
 }
 
-/** Affinity laws — speed ratio n₁ vs n₂. */
+
+
+/** Affinity laws — speed ratio n₁ vs n₂ (same readable pump silhouette as ch.14). */
 export function AffinityScene() {
-  // Vertical suction → housing → discharge (particles stay on pipe axis).
-  const leftFlow = polyPath([
-    new THREE.Vector3(-1.05, -0.85, 0),
-    new THREE.Vector3(-1.05, -0.35, 0),
-    new THREE.Vector3(-1.05, 0.05, 0),
-    new THREE.Vector3(-1.05, 0.75, 0),
-  ]);
-  const rightFlow = polyPath([
-    new THREE.Vector3(1.05, -0.85, 0),
-    new THREE.Vector3(1.05, -0.35, 0),
-    new THREE.Vector3(1.05, 0.05, 0),
-    new THREE.Vector3(1.05, 0.75, 0),
-  ]);
+  // Paths are local to each pump group (origin at impeller).
+  const flow = useMemo(
+    () =>
+      polyPath([
+        new THREE.Vector3(0, -0.95, 0),
+        new THREE.Vector3(0, -0.35, 0),
+        new THREE.Vector3(0, 0.05, 0),
+        new THREE.Vector3(0, 0.95, 0),
+      ]),
+    [],
+  );
 
   return (
-    <SceneShell label="affinity laws" camera={[4.2, 2.2, 4]}>
-      {/* left pump — slow */}
-      <mesh position={[-1.05, 0, 0]}>
-        <boxGeometry args={[0.75, 0.7, 0.5]} />
-        <meshStandardMaterial color={HOUSING} metalness={0.3} roughness={0.45} />
-      </mesh>
-      <SpinningImpeller position={[-1.05, 0, 0.22]} speed={1.4} radius={0.22} blades={4} />
-      <mesh position={[-1.05, -0.55, 0]}>
-        <cylinderGeometry args={[0.12, 0.12, 0.55, 14]} />
-        <meshStandardMaterial color={PIPE} />
-      </mesh>
-      <mesh position={[-1.05, 0.55, 0]}>
-        <cylinderGeometry args={[0.11, 0.11, 0.55, 14]} />
-        <meshStandardMaterial color={PIPE} />
-      </mesh>
-      <FlowParticles path={leftFlow} speed={0.25} count={22} color="#5ab8d0" seed={1} />
-      <SceneLabel3D position={[-1.05, 1.0, 0]}>n₁</SceneLabel3D>
-
-      {/* right pump — 2× speed */}
-      <mesh position={[1.05, 0, 0]}>
-        <boxGeometry args={[0.75, 0.7, 0.5]} />
-        <meshStandardMaterial color={HOUSING} metalness={0.3} roughness={0.45} />
-      </mesh>
-      <SpinningImpeller position={[1.05, 0, 0.22]} speed={2.8} radius={0.22} blades={4} />
-      <mesh position={[1.05, -0.55, 0]}>
-        <cylinderGeometry args={[0.12, 0.12, 0.55, 14]} />
-        <meshStandardMaterial color={PIPE} />
-      </mesh>
-      <mesh position={[1.05, 0.55, 0]}>
-        <cylinderGeometry args={[0.11, 0.11, 0.55, 14]} />
-        <meshStandardMaterial color={PIPE} />
-      </mesh>
-      <FlowParticles path={rightFlow} speed={0.5} count={22} color="#7ad8f0" seed={2} />
-      <SceneLabel3D position={[1.05, 1.0, 0]}>n₂</SceneLabel3D>
-
-      <SceneLabel3D position={[0, 1.4, 0]}>affinity laws</SceneLabel3D>
+    <SceneShell label="affinity laws" camera={[4.4, 2.4, 4.2]}>
+      {([-1.15, 1.15] as const).map((x, i) => (
+        <group key={x} position={[x, 0, 0]}>
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.38, 0.38, 0.32, 28]} />
+            <meshStandardMaterial
+              color={HOUSING}
+              metalness={0.3}
+              roughness={0.45}
+              transparent
+              opacity={0.36}
+              depthWrite={false}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+          <SpinningImpeller
+            position={[0, 0, 0.06]}
+            speed={i === 0 ? 1.4 : 2.8}
+            radius={0.22}
+            blades={4}
+          />
+          <mesh position={[0, -0.55, 0]}>
+            <cylinderGeometry args={[0.11, 0.11, 0.6, 14]} />
+            <meshStandardMaterial
+              color={PIPE}
+              metalness={0.25}
+              roughness={0.5}
+              transparent
+              opacity={0.75}
+              depthWrite={false}
+            />
+          </mesh>
+          <mesh position={[0, 0.55, 0]}>
+            <cylinderGeometry args={[0.1, 0.1, 0.6, 14]} />
+            <meshStandardMaterial
+              color={PIPE}
+              metalness={0.25}
+              roughness={0.5}
+              transparent
+              opacity={0.75}
+              depthWrite={false}
+            />
+          </mesh>
+          <FlowParticles
+            path={flow}
+            speed={i === 0 ? 0.25 : 0.5}
+            count={22}
+            color={i === 0 ? "#5ab8d0" : "#7ad8f0"}
+            seed={i + 1}
+          />
+          <SceneLabel3D position={[0, 1.15, 0]}>{i === 0 ? "n₁" : "n₂"}</SceneLabel3D>
+        </group>
+      ))}
+      <SceneLabel3D position={[0, 1.55, 0]}>affinity laws</SceneLabel3D>
     </SceneShell>
   );
 }
+
 
 function CavitationBubbles({
   origin,
@@ -202,11 +271,11 @@ function CavitationBubbles({
   const state = useMemo(
     () =>
       Array.from({ length: count }, (_, i) => ({
-        x: origin[0] + (Math.sin(i * 12.1) * 0.5 + 0.5) * 0.35 - 0.1,
-        y: origin[1] + (i / count) * 0.5,
-        z: origin[2] + (Math.cos(i * 7.3) * 0.5) * 0.2,
+        x: origin[0] + (Math.sin(i * 12.1) * 0.5 + 0.5) * 0.45 - 0.1,
+        y: origin[1] + (Math.sin(i * 5.1) * 0.5) * 0.08,
+        z: origin[2] + (Math.cos(i * 7.3) * 0.5) * 0.08,
         phase: Math.sin(i * 3.7) * 0.5 + 0.5,
-        speed: 0.25 + (i % 5) * 0.06,
+        speed: 0.2 + (i % 5) * 0.05,
       })),
     [count, origin],
   );
@@ -216,15 +285,15 @@ function CavitationBubbles({
     const clamped = Math.min(dt, 0.05);
     for (let i = 0; i < count; i++) {
       const s = state[i];
-      s.y += clamped * s.speed;
+      s.x += clamped * s.speed * 0.35;
       s.phase += clamped;
-      if (s.y > origin[1] + 0.75) {
-        s.y = origin[1] - 0.05;
-        s.x = origin[0] + (Math.random() - 0.5) * 0.35;
-        s.z = origin[2] + (Math.random() - 0.5) * 0.25;
+      if (s.x > origin[0] + 0.55) {
+        s.x = origin[0] - 0.15;
+        s.y = origin[1] + (Math.random() - 0.5) * 0.1;
+        s.z = origin[2] + (Math.random() - 0.5) * 0.1;
       }
       dummy.position.set(s.x, s.y, s.z);
-      const sc = 0.04 + 0.03 * Math.abs(Math.sin(s.phase * 2));
+      const sc = 0.035 + 0.025 * Math.abs(Math.sin(s.phase * 2));
       dummy.scale.setScalar(sc);
       dummy.updateMatrix();
       mesh.current.setMatrixAt(i, dummy.matrix);
@@ -247,30 +316,81 @@ function CavitationBubbles({
   );
 }
 
-/** NPSH — cavitation risk near pump inlet. */
+/** NPSH — cavitation risk near pump inlet (same clear suction→volute→discharge layout). */
 export function NpshScene() {
-  const inlet = linePath(new THREE.Vector3(-1.7, -0.2, 0), new THREE.Vector3(-0.45, -0.2, 0));
-  const outlet = linePath(new THREE.Vector3(0.45, 0.35, 0), new THREE.Vector3(1.4, 0.72, 0));
+  const CX = 0;
+  const CY = 0.1;
+  const VOLUTE_R = 0.5;
+  const Y_IN = 0;
+  const X_OUT = 0.1;
+  const Y_TAKEOFF = CY + VOLUTE_R - 0.02;
+
+  const path = useMemo(
+    () =>
+      polyPath([
+        new THREE.Vector3(-1.7, Y_IN, 0),
+        new THREE.Vector3(-VOLUTE_R - 0.05, Y_IN, 0),
+        new THREE.Vector3(-0.15, CY, 0),
+        new THREE.Vector3(X_OUT, Y_TAKEOFF, 0),
+        new THREE.Vector3(X_OUT, 1.35, 0),
+      ]),
+    [],
+  );
 
   return (
-    <SceneShell label="NPSHₐ > NPSHᵣ" camera={[4, 2.3, 3.8]}>
-      <mesh position={[0.1, 0.1, 0]}>
-        <boxGeometry args={[1.0, 0.9, 0.65]} />
-        <meshStandardMaterial color={HOUSING} metalness={0.35} roughness={0.4} />
+    <SceneShell label="NPSHₐ > NPSHᵣ" camera={[4.0, 2.5, 4.6]}>
+      <mesh position={[CX, CY, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[VOLUTE_R, VOLUTE_R, 0.36, 32]} />
+        <meshStandardMaterial
+          color={HOUSING}
+          metalness={0.35}
+          roughness={0.42}
+          transparent
+          opacity={0.34}
+          depthWrite={false}
+          side={THREE.DoubleSide}
+        />
       </mesh>
-      <SpinningImpeller position={[0.05, 0.05, 0.26]} speed={2.8} radius={0.28} />
-      <mesh position={[-1.05, -0.2, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.17, 0.17, 1.35, 18]} />
-        <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.5} />
+      <SpinningImpeller position={[CX, CY, 0.06]} speed={2.8} radius={0.28} />
+
+      <mesh position={[-(1.05 + VOLUTE_R) / 2, Y_IN, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.15, 0.15, 1.05 + VOLUTE_R - 0.08, 18]} />
+        <meshStandardMaterial
+          color={PIPE}
+          metalness={0.25}
+          roughness={0.5}
+          transparent
+          opacity={0.72}
+          depthWrite={false}
+        />
       </mesh>
-      <mesh position={[0.95, 0.55, 0]} rotation={[0, 0, 0.4]}>
-        <cylinderGeometry args={[0.14, 0.14, 0.95, 16]} />
-        <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.5} />
+      <mesh position={[X_OUT, Y_TAKEOFF, 0]}>
+        <sphereGeometry args={[0.18, 14, 14]} />
+        <meshStandardMaterial
+          color={PIPE}
+          metalness={0.3}
+          roughness={0.45}
+          transparent
+          opacity={0.8}
+          depthWrite={false}
+        />
       </mesh>
-      <FlowParticles path={inlet} speed={0.38} count={32} color={WATER} seed={1} />
-      <FlowParticles path={outlet} speed={0.42} count={24} color="#7ad8f0" seed={2} />
-      <CavitationBubbles origin={[-0.85, -0.15, 0]} count={16} />
-      <SceneLabel3D position={[0, 1.2, 0]}>{"NPSHₐ > NPSHᵣ"}</SceneLabel3D>
+      <mesh position={[X_OUT, (Y_TAKEOFF + 1.35) / 2, 0]}>
+        <cylinderGeometry args={[0.13, 0.13, 1.35 - Y_TAKEOFF, 16]} />
+        <meshStandardMaterial
+          color={PIPE}
+          metalness={0.25}
+          roughness={0.5}
+          transparent
+          opacity={0.72}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <FlowParticles path={path} speed={0.38} count={48} color={WATER} seed={1} />
+      {/* Vapor bubbles stay inside suction barrel near impeller eye */}
+      <CavitationBubbles origin={[-0.85, Y_IN, 0]} count={14} />
+      <SceneLabel3D position={[0, 1.7, 0]}>{"NPSHₐ > NPSHᵣ"}</SceneLabel3D>
     </SceneShell>
   );
 }
