@@ -19,10 +19,12 @@ Production: https://hydraulics-handbook-web.vercel.app
 | 2026-07-24 | Motion | ChapterToc | Stale visibility map across chapter nav | major | fixed (clear on chapter.id) |
 | 2026-07-24 | Motion loop1 | local `http://localhost:3011` | Landing hero visible; guide readable; empty filter OK; calc pump 26.16 kW; canvas present; routes HEAD 200 | pass | closed |
 | 2026-07-24 | Motion loop2 | local after TOC/FOUC fixes | Note TOC `aria-current`; landing FOUC OK; tsc+eslint clean | pass | closed |
-| 2026-07-24 | Prod note | `/tools/*` on vercel.app | 404 on production (local OK) | major | open — redeploy needed |
+| 2026-07-24 | Prod | `/tools/*` | 404 — `.vercelignore` `tools` matched `src/app/tools` | blocker | fixed (`/tools` root-only) + redeploy |
+| 2026-07-24 | Prod loop1 | alias + Browser | landing/guide/ch14/calculators OK; tools 200 after ignore fix | pass | closed |
+| 2026-07-24 | Prod loop2 | HEAD all key routes | all 200 | pass | closed |
 
 ## Perfect gate
 
-- Two consecutive Browser/HTTP passes with zero new findings: **PASS** (motion loop2 on local after FOUC/TOC fixes)
-- Production motion ship: pending redeploy (also fixes `/tools/*` 404)
+- Two consecutive Browser/HTTP passes with zero new findings: **PASS** (prod loop1 Browser + loop2 HEAD after vercelignore fix)
 - Production aliased: https://hydraulics-handbook-web.vercel.app
+- Commits: `49213c2` motion polish · `e8f57a7` vercelignore tools fix
