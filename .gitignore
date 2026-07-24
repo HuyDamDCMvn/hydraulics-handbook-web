@@ -43,6 +43,13 @@ next-env.d.ts
 .vercel
 
 # Local Blender toolchain (large binaries / zip)
+/tools/
 /tools/blender-*/
 /tools/*.zip
 /tools/uv/
+
+# Local QA / capture artifacts
+/.qa-schematics/
+/.qa-locale/
+/assets/
+*.log

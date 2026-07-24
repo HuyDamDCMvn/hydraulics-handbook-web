@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+coverage
+tools
+.qa-schematics
+.qa-locale
+assets
+scripts/blender
+*.log
+*.zip
+.env*
+.vercel
