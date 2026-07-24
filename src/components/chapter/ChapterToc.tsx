@@ -2,25 +2,82 @@
 
 import type { Chapter } from "@/content/types";
 import { animated, useSpring } from "@react-spring/web";
-import { useState } from "react";
+import clsx from "clsx";
+import { useEffect, useRef, useState } from "react";
 import { useT } from "@/i18n/LocaleProvider";
+
+const SCROLLSPY_IDS = [
+  "equations",
+  "scope",
+  "assumptions",
+  "nomenclature",
+  "note",
+  "examples",
+] as const;
+
+/** Sticky schematic (xl column) stays in view — exclude from spy so reading-column wins */
+type SectionId = (typeof SCROLLSPY_IDS)[number] | "schematic";
 
 export function ChapterToc({ chapter }: { chapter: Chapter }) {
   const t = useT();
   const [open, setOpen] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId>("equations");
+  const visibleRef = useRef(new Map<string, boolean>());
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const visibility = visibleRef.current;
+    visibility.clear();
+    setActiveSection("equations");
+
+    const sectionEls = SCROLLSPY_IDS.map((id) => document.getElementById(id)).filter(
+      (el): el is HTMLElement => el !== null,
+    );
+    if (!sectionEls.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          visibility.set(entry.target.id, entry.isIntersecting);
+        });
+        let current: SectionId | null = null;
+        for (const id of SCROLLSPY_IDS) {
+          if (visibility.get(id)) current = id;
+        }
+        if (current) setActiveSection(current);
+      },
+      { rootMargin: "-20% 0px -55% 0px", threshold: 0 },
+    );
+
+    sectionEls.forEach((el) => observer.observe(el));
+    return () => {
+      observer.disconnect();
+      visibility.clear();
+    };
+  }, [chapter.id]);
+
   const drawer = useSpring({
     transform: open ? "translateY(0%)" : "translateY(110%)",
+    immediate: reduced,
     config: { tension: 260, friction: 26 },
   });
 
   const sections = [
-    { id: "equations", label: t.chapter.equationsNav },
-    { id: "scope", label: t.chapter.scope },
-    { id: "assumptions", label: t.chapter.assumptions },
-    { id: "nomenclature", label: t.chapter.nomenclature },
-    { id: "schematic", label: t.chapter.schematic },
-    { id: "note", label: t.chapter.note },
-    { id: "examples", label: t.chapter.examples },
+    { id: "equations" as const, label: t.chapter.equationsNav },
+    { id: "scope" as const, label: t.chapter.scope },
+    { id: "assumptions" as const, label: t.chapter.assumptions },
+    { id: "nomenclature" as const, label: t.chapter.nomenclature },
+    { id: "schematic" as const, label: t.chapter.schematic },
+    { id: "note" as const, label: t.chapter.note },
+    { id: "examples" as const, label: t.chapter.examples },
   ];
 
   const links = (
@@ -30,8 +87,15 @@ export function ChapterToc({ chapter }: { chapter: Chapter }) {
         <a
           key={s.id}
           href={`#${s.id}`}
-          className="text-ink-muted no-underline hover:text-accent"
-          onClick={() => setOpen(false)}
+          className={clsx(
+            "no-underline hover:text-accent",
+            activeSection === s.id ? "font-semibold text-accent" : "text-ink-muted",
+          )}
+          aria-current={activeSection === s.id ? "true" : undefined}
+          onClick={() => {
+            setActiveSection(s.id);
+            setOpen(false);
+          }}
         >
           {s.label}
         </a>

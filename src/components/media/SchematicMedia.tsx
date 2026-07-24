@@ -3,6 +3,7 @@
 import { useEffect, useState, type ComponentType } from "react";
 import dynamic from "next/dynamic";
 import type { Chapter } from "@/content/types";
+import { useInView } from "@/hooks/useInView";
 import { useT } from "@/i18n/LocaleProvider";
 
 function SchematicImg({ src, title }: { src: string; title: string }) {
@@ -148,6 +149,12 @@ export function SchematicMedia({ chapter }: { chapter: Chapter }) {
   const t = useT();
   const [reduced, setReduced] = useState(false);
   const [webglOk, setWebglOk] = useState(true);
+  const { ref, inView } = useInView({ rootMargin: "240px" });
+  const [mount3d, setMount3d] = useState(false);
+
+  useEffect(() => {
+    setMount3d(false);
+  }, [chapter.id]);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -167,15 +174,31 @@ export function SchematicMedia({ chapter }: { chapter: Chapter }) {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
+  useEffect(() => {
+    if (inView) {
+      setMount3d(true);
+      return;
+    }
+    // Release WebGL after leaving viewport — keep SVG while paused off-screen
+    const timer = window.setTimeout(() => setMount3d(false), 12_000);
+    return () => window.clearTimeout(timer);
+  }, [inView]);
+
   const Scene = SCENE_BY_ID[chapter.id];
 
   if (!reduced && webglOk && Scene) {
     return (
-      <div>
-        <Scene />
-        <p className="mt-2 text-xs text-ink-muted">
-          {t.schematic.interactive} — {t.schematic.dragOrbit}.
-        </p>
+      <div ref={ref}>
+        {mount3d ? (
+          <>
+            <Scene />
+            <p className="mt-2 text-xs text-ink-muted">
+              {t.schematic.interactive} — {t.schematic.dragOrbit}.
+            </p>
+          </>
+        ) : (
+          <SchematicImg src={chapter.schematic.src} title={chapter.schematic.caption} />
+        )}
       </div>
     );
   }

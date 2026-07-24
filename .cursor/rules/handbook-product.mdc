@@ -25,6 +25,7 @@ Academic technical reference (read / search / calculate). **Not** a SaaS marketi
 - No AI-purple glow, cream–terracotta craft palette, or Inter/Roboto/Arial defaults
 - Landing: brand + one headline + one abstract + one CTA — no stats/cards in first viewport
 - Chapter: reading column (~65–72ch) + sticky TOC; **no cards wrapping equations**
+- UX/UI copy & chrome: always update **ENG + VIE** together (see `bilingual-ui`)
 
 ## Sources of truth
 

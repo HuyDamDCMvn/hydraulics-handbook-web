@@ -78,22 +78,28 @@ export default function ExamplesPage() {
       </div>
 
       <ul ref={listRef} className="mt-6 divide-y divide-line border-y border-line">
-        {examples.map((ex) => (
-          <li key={`${ex.chapterId}-${ex.id}`} className="py-4">
-            <Link href={`/chapters/${ex.chapterId}#examples`} className="block no-underline">
-              <span className="font-mono text-sm text-accent">
-                {t.examplesPage.example} {ex.id}
-              </span>
-              <span className="mt-1 block font-medium text-ink">{ex.prompt}</span>
-              <span className="mt-1 block text-sm text-ink-muted">
-                {formatTemplate(t.examplesPage.chapterOf, {
-                  id: ex.chapterId,
-                  title: ex.chapterTitle,
-                })}
-              </span>
-            </Link>
+        {examples.length === 0 ? (
+          <li className="empty-state py-8 text-center text-sm text-ink-muted">
+            {t.examplesPage.emptyFilter}
           </li>
-        ))}
+        ) : (
+          examples.map((ex) => (
+            <li key={`${ex.chapterId}-${ex.id}`} className="py-4">
+              <Link href={`/chapters/${ex.chapterId}#examples`} className="block no-underline">
+                <span className="font-mono text-sm text-accent">
+                  {t.examplesPage.example} {ex.id}
+                </span>
+                <span className="mt-1 block font-medium text-ink">{ex.prompt}</span>
+                <span className="mt-1 block text-sm text-ink-muted">
+                  {formatTemplate(t.examplesPage.chapterOf, {
+                    id: ex.chapterId,
+                    title: ex.chapterTitle,
+                  })}
+                </span>
+              </Link>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );

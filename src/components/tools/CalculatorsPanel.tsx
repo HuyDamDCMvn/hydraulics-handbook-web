@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useT } from "@/i18n/LocaleProvider";
 
 type CalcId = "pressure" | "hydrostatic" | "darcy" | "pump" | "reynolds" | "hammer";
@@ -64,7 +64,7 @@ export function CalculatorsPanel() {
             key={id}
             type="button"
             onClick={() => setTab(id)}
-            className={`rounded border px-3 py-1.5 text-sm ${
+            className={`rounded border px-3 py-1.5 text-sm transition-colors ${
               tab === id
                 ? "border-accent bg-accent-soft text-accent"
                 : "border-line bg-white/60 text-ink-muted"
@@ -76,7 +76,7 @@ export function CalculatorsPanel() {
       </div>
 
       <div className="mt-5 border border-line bg-white/55 p-4 md:grid md:grid-cols-[1fr_auto] md:gap-8 md:p-6">
-        <div>
+        <div key={tab} className="calc-panel-enter">
           {tab === "pressure" && <PressureCalc />}
           {tab === "hydrostatic" && <HydroCalc />}
           {tab === "reynolds" && <ReynoldsCalc />}
@@ -120,8 +120,23 @@ function Field({
 }
 
 function Result({ label, value }: { label: string; value: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const prevValue = useRef(value);
+
+  useEffect(() => {
+    if (prevValue.current === value) return;
+    prevValue.current = value;
+    const el = ref.current;
+    if (!el) return;
+    el.classList.remove("result-flash");
+    void el.offsetWidth;
+    el.classList.add("result-flash");
+    const timer = window.setTimeout(() => el.classList.remove("result-flash"), 160);
+    return () => window.clearTimeout(timer);
+  }, [value]);
+
   return (
-    <p className="mt-4 rounded bg-accent-soft px-3 py-3 text-sm">
+    <p ref={ref} className="mt-4 rounded bg-accent-soft px-3 py-3 text-sm">
       <span className="text-ink-muted">{label}: </span>
       <strong className="font-mono text-accent">{value}</strong>
     </p>

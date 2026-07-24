@@ -10,7 +10,7 @@ Academic technical reference site (read / search / calculate). Not a marketing S
 
 ## Cursor artifacts
 
-- Rules: `.cursor/rules/handbook-product.mdc`, `motion-budget.mdc`, `chapter-content.mdc`  
+- Rules: `.cursor/rules/handbook-product.mdc`, `bilingual-ui.mdc`, `motion-budget.mdc`, `chapter-content.mdc`  
 - Skill: `.cursor/skills/handbook-web-ui/`  
 
 ## Quick defaults
@@ -19,3 +19,4 @@ Academic technical reference site (read / search / calculate). Not a marketing S
 - Motion: CSS → AutoAnimate → Spring → GSAP → Lottie → R3F  
 - Schematics: SVG first; R3F only when 3D teaches better  
 - Equations: KaTeX only  
+- UX/UI: always ship **ENG + VIE** in the same change (`src/i18n/ui.ts`)  

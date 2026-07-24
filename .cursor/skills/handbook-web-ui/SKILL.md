@@ -17,6 +17,7 @@ Product: **academic technical reference** (read / search / calculate). Spec: `do
 1. State Design Read: editorial academic reference, KaTeX-first, trust-first.
 2. Lock dials: VARIANCE **3–4**, MOTION **2–3**, DENSITY **6–7**.
 3. Pick motion with the decision tree below — one engine per surface.
+4. Bilingual lock: update **ENG + VIE** together (`src/i18n/ui.ts` / chapter overlays) — never ship one locale only.
 
 ## Decision tree (motion / media)
 

@@ -46,6 +46,7 @@ type UiDict = {
     showing: string; // "{n} of {total}"
     eq: string;
     ex: string;
+    emptyFilter: string;
   };
   chapter: {
     chapter: string;
@@ -79,6 +80,7 @@ type UiDict = {
     allChapters: string;
     example: string;
     chapterOf: string; // "Chapter {id}: {title}"
+    emptyFilter: string;
   };
   guide: {
     title: string;
@@ -195,6 +197,7 @@ export const ui: Record<Locale, UiDict> = {
       showing: "Showing {n} of {total} chapters",
       eq: "eq",
       ex: "ex",
+      emptyFilter: "No chapters match your search or theme filter.",
     },
     chapter: {
       chapter: "Chapter",
@@ -229,6 +232,7 @@ export const ui: Record<Locale, UiDict> = {
       allChapters: "All chapters",
       example: "Example",
       chapterOf: "Chapter {id}: {title}",
+      emptyFilter: "No examples match your search or chapter filter.",
     },
     guide: {
       title: "How to use this handbook",
@@ -378,6 +382,7 @@ export const ui: Record<Locale, UiDict> = {
       showing: "Hiển thị {n} / {total} chương",
       eq: "pt",
       ex: "vd",
+      emptyFilter: "Không có chương nào khớp tìm kiếm hoặc bộ lọc chủ đề.",
     },
     chapter: {
       chapter: "Chương",
@@ -412,6 +417,7 @@ export const ui: Record<Locale, UiDict> = {
       allChapters: "Mọi chương",
       example: "Ví dụ",
       chapterOf: "Chương {id}: {title}",
+      emptyFilter: "Không có ví dụ nào khớp tìm kiếm hoặc bộ lọc chương.",
     },
     guide: {
       title: "Cách dùng sổ tay này",

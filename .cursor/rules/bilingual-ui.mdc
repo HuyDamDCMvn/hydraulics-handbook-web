@@ -1,0 +1,33 @@
+---
+description: UX/UI changes must ship ENG + VIE together
+alwaysApply: true
+---
+
+# Bilingual UX/UI — ENG + VIE
+
+Locales: **`en`** (ENG) and **`vi`** (VIE). Any UX/UI edit must update **both** in the same change.
+
+## When this applies
+
+- New or changed visible copy (labels, CTAs, nav, empty states, errors, captions)
+- New UI surfaces, layout chrome, toggles, forms, calculators, guides
+- Chapter overlays / localized content fields users can read
+
+## Do
+
+- Edit `src/i18n/ui.ts` for **both** `en` and `vi` keys together
+- Keep `UiDict` keys in sync — no key present in only one locale
+- For chapter text overlays, update ENG source + VIE overlay (`src/i18n/` + chapter locale data)
+- QA both locales via `LocaleToggle` before considering the change done
+
+## Don't
+
+- Ship ENG-only or VIE-only strings
+- Hardcode user-facing English (or Vietnamese) in components — use `t` / `useT` / `useLocale`
+- Leave placeholder/`TODO` VIE while ENG is polished
+
+## Checklist (before finish)
+
+- [ ] Same keys in `ui.en` and `ui.vi`
+- [ ] No hardcoded user-facing strings in JSX
+- [ ] Spot-check ENG + VIE on the touched surface

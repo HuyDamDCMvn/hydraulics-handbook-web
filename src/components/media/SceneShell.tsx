@@ -3,6 +3,7 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import { Suspense, useEffect, useState, type ReactNode } from "react";
+import { useInView } from "@/hooks/useInView";
 import { useT } from "@/i18n/LocaleProvider";
 
 /** Shared light academic palette for all formula schematics */
@@ -27,6 +28,12 @@ export function SceneShell({
 }: Props) {
   const t = useT();
   const [reduceMotion, setReduceMotion] = useState(true);
+  // Selective R3F per chapter (e.g. Ch.13/20/21) is a future product decision —
+  // this shell pauses off-screen scenes without removing 3D from all chapters.
+  // Assume on-screen until IO says otherwise — avoids first-frame freeze on sticky schematics
+  const { ref: containerRef, inView } = useInView<HTMLDivElement>({
+    initialInView: true,
+  });
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -38,10 +45,15 @@ export function SceneShell({
 
   return (
     <div
+      ref={containerRef}
       className="relative h-[22rem] w-full overflow-hidden border border-line shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] xl:h-[26rem]"
       style={{ background: bg }}
     >
-      <Canvas camera={{ position: camera, fov: 42 }} dpr={[1, 1.75]}>
+      <Canvas
+        camera={{ position: camera, fov: 42 }}
+        dpr={[1, 1.75]}
+        frameloop={inView ? "always" : "demand"}
+      >
         <color attach="background" args={[bg]} />
         <ambientLight intensity={1.12} />
         <directionalLight position={[5, 8, 4]} intensity={1.35} castShadow />

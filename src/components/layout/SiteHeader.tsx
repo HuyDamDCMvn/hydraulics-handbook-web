@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { animated, useSpring } from "@react-spring/web";
 import clsx from "clsx";
 import { LocaleToggle } from "@/components/layout/LocaleToggle";
@@ -12,9 +12,20 @@ export function SiteHeader() {
   const pathname = usePathname();
   const t = useT();
   const [open, setOpen] = useState(false);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const onChange = () => setReduced(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
   const drawer = useSpring({
     transform: open ? "translateX(0%)" : "translateX(100%)",
     opacity: open ? 1 : 0,
+    immediate: reduced,
     config: { tension: 280, friction: 28 },
   });
 
@@ -45,7 +56,7 @@ export function SiteHeader() {
                 key={l.href}
                 href={l.href}
                 className={clsx(
-                  "no-underline hover:underline",
+                  "nav-link no-underline hover:underline",
                   pathname === l.href || (l.href !== "/" && pathname.startsWith(l.href))
                     ? "font-semibold text-accent"
                     : "text-ink-muted",

@@ -36,7 +36,25 @@ export function ChapterIndex() {
   }, [initialTheme]);
 
   useEffect(() => {
-    if (listRef.current) autoAnimate(listRef.current);
+    const el = listRef.current;
+    if (!el) return;
+
+    // AutoAnimate + CSS grid FLIP is janky — only enable on single-column (<sm)
+    const mq = window.matchMedia("(max-width: 639px)");
+    const controller = autoAnimate(el);
+    controller.disable();
+
+    const sync = () => {
+      if (mq.matches) controller.enable();
+      else controller.disable();
+    };
+
+    sync();
+    mq.addEventListener("change", sync);
+    return () => {
+      mq.removeEventListener("change", sync);
+      controller.disable();
+    };
   }, []);
 
   const filtered = useMemo(() => {
@@ -103,22 +121,28 @@ export function ChapterIndex() {
         ref={listRef}
         className="mt-3 divide-y divide-line border-y border-line sm:grid sm:grid-cols-2 sm:gap-x-8 sm:divide-y-0 sm:border-0 lg:grid-cols-3"
       >
-        {list.map((c) => (
-          <li key={c.id} className="border-b border-line py-3 sm:border-b">
-            <Link href={`/chapters/${c.id}`} className="group block no-underline">
-              <span className="font-mono text-xs text-accent">
-                {t.chapter.chapter} {c.id}
-              </span>
-              <span className="mt-0.5 block font-display text-lg leading-snug text-ink group-hover:underline">
-                {c.title}
-              </span>
-              <span className="mt-0.5 block text-xs text-ink-muted">
-                {t.themes[c.theme]} · {c.equations.length} {t.chaptersPage.eq} ·{" "}
-                {c.examples.length} {t.chaptersPage.ex}
-              </span>
-            </Link>
+        {list.length === 0 ? (
+          <li className="empty-state col-span-full py-8 text-center text-sm text-ink-muted sm:col-span-2 lg:col-span-3">
+            {t.chaptersPage.emptyFilter}
           </li>
-        ))}
+        ) : (
+          list.map((c) => (
+            <li key={c.id} className="border-b border-line py-3 sm:border-b">
+              <Link href={`/chapters/${c.id}`} className="group block no-underline">
+                <span className="font-mono text-xs text-accent">
+                  {t.chapter.chapter} {c.id}
+                </span>
+                <span className="mt-0.5 block font-display text-lg leading-snug text-ink group-hover:underline">
+                  {c.title}
+                </span>
+                <span className="mt-0.5 block text-xs text-ink-muted">
+                  {t.themes[c.theme]} · {c.equations.length} {t.chaptersPage.eq} ·{" "}
+                  {c.examples.length} {t.chaptersPage.ex}
+                </span>
+              </Link>
+            </li>
+          ))
+        )}
       </ul>
     </div>
   );
