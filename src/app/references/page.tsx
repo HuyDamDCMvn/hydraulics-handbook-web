@@ -1,4 +1,6 @@
-export const metadata = { title: "References" };
+"use client";
+
+import { useT } from "@/i18n/LocaleProvider";
 
 const refs = [
   "White, F. M., and Xue, H. Fluid Mechanics, 9th ed. McGraw Hill, ISBN 978-1-260-25831-8.",
@@ -9,19 +11,16 @@ const refs = [
 ];
 
 export default function ReferencesPage() {
+  const t = useT();
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="font-display text-4xl text-ink">References</h1>
+      <h1 className="font-display text-4xl text-ink">{t.references.title}</h1>
       <ol className="mt-6 list-decimal space-y-4 pl-5 text-ink">
         {refs.map((r) => (
           <li key={r}>{r}</li>
         ))}
       </ol>
-      <p className="mt-8 text-sm text-ink-muted">
-        Equations and examples in this handbook are synthesized for instruction from standard
-        fluid-mechanics relationships. Empirical coefficients must be selected from the governing
-        standard, manufacturer data, or validated project-specific sources.
-      </p>
+      <p className="mt-8 text-sm text-ink-muted">{t.references.footnote}</p>
     </div>
   );
 }

@@ -2,7 +2,8 @@
 
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
-import { Suspense, type ReactNode } from "react";
+import { Suspense, useEffect, useState, type ReactNode } from "react";
+import { useT } from "@/i18n/LocaleProvider";
 
 /** Shared light academic palette for all formula schematics */
 export const LIGHT_BG = "#f4f1ea";
@@ -24,17 +25,31 @@ export function SceneShell({
   bg = LIGHT_BG,
   label,
 }: Props) {
+  const t = useT();
+  const [reduceMotion, setReduceMotion] = useState(true);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduceMotion(mq.matches);
+    const onChange = () => setReduceMotion(mq.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+
   return (
-    <div className="relative h-80 w-full border border-line" style={{ background: bg }}>
+    <div
+      className="relative h-[22rem] w-full overflow-hidden border border-line shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] xl:h-[26rem]"
+      style={{ background: bg }}
+    >
       <Canvas camera={{ position: camera, fov: 42 }} dpr={[1, 1.75]}>
         <color attach="background" args={[bg]} />
-        <ambientLight intensity={1.05} />
-        <directionalLight position={[5, 8, 4]} intensity={1.25} castShadow />
-        <directionalLight position={[-4, 3, -2]} intensity={0.35} />
-        <hemisphereLight args={["#ffffff", "#d8d0c0", 0.65]} />
+        <ambientLight intensity={1.12} />
+        <directionalLight position={[5, 8, 4]} intensity={1.35} castShadow />
+        <directionalLight position={[-4, 3, -2]} intensity={0.4} />
+        <hemisphereLight args={["#ffffff", "#d8d0c0", 0.7]} />
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.35, 0]} receiveShadow>
           <circleGeometry args={[6, 48]} />
-          <meshStandardMaterial color={LIGHT_FLOOR} roughness={0.95} metalness={0} />
+          <meshStandardMaterial color={LIGHT_FLOOR} roughness={0.92} metalness={0} />
         </mesh>
         <Suspense fallback={null}>{children}</Suspense>
         <OrbitControls
@@ -42,11 +57,14 @@ export function SceneShell({
           minDistance={2.5}
           maxDistance={10}
           maxPolarAngle={Math.PI * 0.49}
+          autoRotate={!reduceMotion}
+          autoRotateSpeed={0.35}
         />
       </Canvas>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[color-mix(in_srgb,var(--paper)_55%,transparent)] to-transparent" />
       {label ? (
-        <p className="pointer-events-none absolute bottom-2 left-3 right-3 text-xs text-ink-muted">
-          {label}
+        <p className="pointer-events-none absolute bottom-2 left-3 right-3 rounded bg-[color-mix(in_srgb,white_78%,transparent)] px-2 py-1 text-xs text-ink-muted backdrop-blur-[2px]">
+          {label} · {t.schematic.dragOrbit}
         </p>
       ) : null}
     </div>

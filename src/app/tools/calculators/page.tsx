@@ -1,16 +1,15 @@
-import { CalculatorsPanel } from "@/components/tools/CalculatorsPanel";
+"use client";
 
-export const metadata = { title: "Calculators" };
+import { CalculatorsPanel } from "@/components/tools/CalculatorsPanel";
+import { useT } from "@/i18n/LocaleProvider";
 
 export default function CalculatorsPage() {
+  const t = useT();
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="font-display text-4xl text-ink">SI calculators</h1>
-      <p className="mt-2 text-ink-muted">
-        Quick checks aligned with handbook governing equations. Confirm assumptions before using
-        results.
-      </p>
-      <div className="mt-8">
+    <div className="mx-auto max-w-6xl px-4 py-8 md:py-10">
+      <h1 className="font-display text-3xl text-ink md:text-4xl">{t.calculators.title}</h1>
+      <p className="mt-2 max-w-2xl text-ink-muted">{t.calculators.lede}</p>
+      <div className="mt-6">
         <CalculatorsPanel />
       </div>
     </div>

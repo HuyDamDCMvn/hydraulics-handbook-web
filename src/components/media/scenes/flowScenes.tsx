@@ -12,7 +12,6 @@ import * as THREE from "three";
 
 const WATER = "#4eb3d0";
 const PIPE = "#8a969f";
-const PIPE_MID = "#9aa6b0";
 
 function DarkPipe({
   position,
@@ -53,11 +52,8 @@ export function ContinuityScene() {
       {/* Constriction (scaled cylinders) */}
       <DarkPipe position={[-0.25, 0, 0]} rotation={[0, 0, Math.PI / 2]} args={[0.38, 0.18, 0.55, 20]} />
       <DarkPipe position={[0.25, 0, 0]} rotation={[0, 0, Math.PI / 2]} args={[0.18, 0.38, 0.55, 20]} />
-      {/* Throat ring */}
-      <mesh position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.18, 0.18, 0.35, 20]} />
-        <meshStandardMaterial color={PIPE_MID} metalness={0.5} roughness={0.38} />
-      </mesh>
+      {/* Throat (same translucent treatment so particles stay visible) */}
+      <DarkPipe position={[0, 0, 0]} rotation={[0, 0, Math.PI / 2]} args={[0.18, 0.18, 0.35, 20]} />
       {/* Wide outlet */}
       <DarkPipe position={[1.25, 0, 0]} rotation={[0, 0, Math.PI / 2]} args={[0.38, 0.38, 1.5, 24]} />
       <FlowParticles path={path} count={80} speed={0.55} size={0.07} color="#7fe0ff" seed={5} />
@@ -66,24 +62,44 @@ export function ContinuityScene() {
   );
 }
 
-/** Bernoulli / total head — high reservoir to lower outlet. */
+/** Bernoulli / total head — high reservoir to lower outlet (connected L-pipe). */
 export function BernoulliScene() {
+  // Shared centerline: vertical at x=X, horizontal at y=Y_RUN, meeting at elbow.
+  const X = -1.35;
+  const Y_RUN = -0.05;
+  const r = 0.16;
+  const xEnd = 1.55;
+  const vertTop = 0.9; // into tank water
+  const vertLen = vertTop - Y_RUN;
+  const vertCy = (vertTop + Y_RUN) / 2;
+  const horizLen = xEnd - X;
+  const horizCx = (X + xEnd) / 2;
+
   const path = useMemo(
     () =>
       polyPath([
-        new THREE.Vector3(-1.35, 1.35, 0),
-        new THREE.Vector3(-1.35, 0.55, 0),
-        new THREE.Vector3(-0.55, 0.15, 0),
-        new THREE.Vector3(0.4, -0.05, 0),
-        new THREE.Vector3(1.6, -0.05, 0),
+        new THREE.Vector3(-1.35, 1.05, 0),
+        new THREE.Vector3(-1.35, 0.45, 0),
+        new THREE.Vector3(-1.35, -0.05, 0),
+        new THREE.Vector3(0.2, -0.05, 0),
+        new THREE.Vector3(1.55, -0.05, 0),
       ]),
     [],
   );
 
+  const pipeMat = {
+    color: PIPE,
+    metalness: 0.4,
+    roughness: 0.42,
+    transparent: true,
+    opacity: 0.72,
+    depthWrite: false,
+  } as const;
+
   return (
-    <SceneShell label="Bernoulli / total head" camera={[4.0, 2.8, 4.0]}>
+    <SceneShell label="Bernoulli / total head" camera={[3.6, 2.2, 5.2]}>
       {/* Elevated tank */}
-      <mesh position={[-1.35, 1.15, 0]}>
+      <mesh position={[X, 1.15, 0]}>
         <boxGeometry args={[1.1, 1.0, 0.9]} />
         <meshStandardMaterial
           color="#8ec8d8"
@@ -93,15 +109,25 @@ export function BernoulliScene() {
           roughness={0.25}
         />
       </mesh>
-      <mesh position={[-1.35, 1.05, 0]}>
+      <mesh position={[X, 1.05, 0]}>
         <boxGeometry args={[0.95, 0.75, 0.75]} />
         <meshStandardMaterial color={WATER} transparent opacity={0.55} roughness={0.3} />
       </mesh>
-      {/* Downcomer + lower pipe */}
-      <DarkPipe position={[-1.35, 0.35, 0]} args={[0.16, 0.16, 0.7, 16]} />
-      <DarkPipe position={[0.35, -0.05, 0]} rotation={[0, 0, Math.PI / 2]} args={[0.16, 0.16, 2.4, 16]} />
-      <FlowParticles path={path} count={42} speed={0.38} size={0.048} color="#5ec8e8" seed={2} />
-      <SceneLabel3D position={[0.2, 1.75, 0]}>Bernoulli / total head</SceneLabel3D>
+      {/* Continuous L-conduit: downcomer + elbow + run */}
+      <mesh position={[X, vertCy, 0]}>
+        <cylinderGeometry args={[r, r, vertLen, 20]} />
+        <meshStandardMaterial {...pipeMat} />
+      </mesh>
+      <mesh position={[X, Y_RUN, 0]}>
+        <sphereGeometry args={[r * 1.25, 16, 16]} />
+        <meshStandardMaterial {...pipeMat} opacity={0.85} />
+      </mesh>
+      <mesh position={[horizCx, Y_RUN, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[r, r, horizLen, 20]} />
+        <meshStandardMaterial {...pipeMat} />
+      </mesh>
+      <FlowParticles path={path} count={48} speed={0.4} size={0.05} color="#5ec8e8" seed={2} />
+      <SceneLabel3D position={[0.15, 1.7, 0]}>Bernoulli / total head</SceneLabel3D>
     </SceneShell>
   );
 }

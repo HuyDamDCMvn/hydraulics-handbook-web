@@ -66,4 +66,9 @@ Tài nguyên tham khảo để học và làm web hiện đại: tư duy UI, 3D/
 
 → [`hydraulics-handbook-web-spec.md`](./hydraulics-handbook-web-spec.md)
 
+**Kiến thức đóng gói cho agent** (rules / skill / flows):
+
+→ [`agent-knowledge-web-ui.md`](./agent-knowledge-web-ui.md)  
+→ `.cursor/skills/handbook-web-ui/` · `.cursor/rules/` · [`AGENTS.md`](../AGENTS.md)
+
 Nguồn nội dung: `Hydraulics_Formula_Handbook_Academic_Edition_v3.docx`

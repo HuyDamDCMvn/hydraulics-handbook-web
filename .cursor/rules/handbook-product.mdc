@@ -1,0 +1,34 @@
+---
+description: Hydraulics Handbook product identity, dials, and anti-slop UI
+alwaysApply: true
+---
+
+# Hydraulics Formula Handbook — product
+
+Academic technical reference (read / search / calculate). **Not** a SaaS marketing landing.
+
+## Design Read (declare before UI work)
+
+`Reading this as: academic technical reference for engineering learners, editorial-minimalist, KaTeX + dense tables + sticky TOC.`
+
+## Dials (taste-skill override)
+
+| Dial | Value |
+| --- | --- |
+| DESIGN_VARIANCE | 3–4 |
+| MOTION_INTENSITY | 2–3 |
+| VISUAL_DENSITY | 6–7 |
+
+## Locks
+
+- One accent (deep teal / ink blue), one radius system, one page theme
+- No AI-purple glow, cream–terracotta craft palette, or Inter/Roboto/Arial defaults
+- Landing: brand + one headline + one abstract + one CTA — no stats/cards in first viewport
+- Chapter: reading column (~65–72ch) + sticky TOC; **no cards wrapping equations**
+
+## Sources of truth
+
+- Spec: `docs/hydraulics-handbook-web-spec.md`
+- Stack origins: `docs/web-ui-learning-notes.md`
+- Agent pack: `docs/agent-knowledge-web-ui.md`
+- Skill: `.cursor/skills/handbook-web-ui/SKILL.md`

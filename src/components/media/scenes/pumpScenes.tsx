@@ -51,51 +51,56 @@ function SpinningImpeller({
 
 /** Momentum change through a 90° bend — force on the wall. */
 export function MomentumBendScene() {
-  const flow = polyPath([
-    new THREE.Vector3(-1.6, 0, 0),
-    new THREE.Vector3(-0.1, 0, 0),
-    new THREE.Vector3(0.05, 0.02, 0.2),
-    new THREE.Vector3(0.15, 0.05, 0.55),
-    new THREE.Vector3(0.2, 0.08, 1.45),
-  ]);
+  const R = 0.4;
+  const r = 0.26;
+  const run = 1.35;
+  const flow = useMemo(() => {
+    const pts = [new THREE.Vector3(-(R + run), 0, 0), new THREE.Vector3(-R, 0, 0)];
+    for (let i = 1; i <= 8; i++) {
+      const a = Math.PI - (i / 8) * (Math.PI / 2); // π (−X) → π/2 (+Y)
+      pts.push(new THREE.Vector3(R * Math.cos(a), R * Math.sin(a), 0));
+    }
+    pts.push(new THREE.Vector3(0, R + run, 0));
+    return polyPath(pts);
+  }, []);
 
   return (
-    <SceneShell label="ΣF = ρQ(Vout−Vin)" camera={[3.8, 2.5, 3.5]}>
-      <mesh position={[-0.9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.26, 0.26, 1.5, 22]} />
+    <SceneShell label="ΣF = ρQ(Vout−Vin)" camera={[4.2, 2.6, 4.2]}>
+      <mesh position={[-(R + run / 2), 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[r, r, run, 22]} />
         <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.45} />
       </mesh>
-      <mesh position={[0.2, 0, 0.85]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.26, 0.26, 1.5, 22]} />
+      <mesh position={[0, R + run / 2, 0]}>
+        <cylinderGeometry args={[r, r, run, 22]} />
         <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.45} />
       </mesh>
-      <mesh rotation={[0, -Math.PI / 2, 0]} position={[0.05, 0, 0.05]}>
-        <torusGeometry args={[0.45, 0.26, 12, 28, Math.PI / 2]} />
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <torusGeometry args={[R, r, 12, 28, Math.PI / 2]} />
         <meshStandardMaterial color="#2f8f8f" metalness={0.3} roughness={0.4} />
       </mesh>
-      {/* force cone on bend wall (momentum change) */}
-      <mesh position={[0.55, 0.35, 0.35]} rotation={[0, 0, -0.85]}>
+      {/* force on outer wall of bend */}
+      <mesh position={[0.42, 0.42, 0]} rotation={[0, 0, -Math.PI / 4]}>
         <coneGeometry args={[0.14, 0.42, 14]} />
         <meshStandardMaterial color={FORCE} emissive={FORCE} emissiveIntensity={0.2} />
       </mesh>
-      <mesh position={[0.38, 0.18, 0.28]} rotation={[0, 0, -0.85]}>
+      <mesh position={[0.22, 0.22, 0]} rotation={[0, 0, -Math.PI / 4]}>
         <cylinderGeometry args={[0.035, 0.035, 0.28, 8]} />
         <meshStandardMaterial color={FORCE} />
       </mesh>
       <FlowParticles path={flow} speed={0.42} count={44} color={WATER} />
-      <SceneLabel3D position={[0.2, 1.15, 0.4]}>ΣF = ρQ(Vout−Vin)</SceneLabel3D>
+      <SceneLabel3D position={[0.25, 1.6, 0]}>ΣF = ρQ(Vout−Vin)</SceneLabel3D>
     </SceneShell>
   );
 }
 
 /** Centrifugal pump — power equation. */
 export function PumpScene() {
-  const inlet = linePath(new THREE.Vector3(-1.5, -0.35, 0), new THREE.Vector3(-0.35, -0.1, 0));
-  const outlet = linePath(new THREE.Vector3(0.35, 0.35, 0), new THREE.Vector3(1.5, 0.75, 0));
+  const inlet = linePath(new THREE.Vector3(-1.55, -0.3, 0), new THREE.Vector3(-0.45, -0.3, 0));
+  const outlet = linePath(new THREE.Vector3(0.45, 0.35, 0), new THREE.Vector3(1.55, 0.72, 0));
   const rise = polyPath([
-    new THREE.Vector3(-0.2, -0.15, 0),
-    new THREE.Vector3(0, 0, 0),
-    new THREE.Vector3(0.15, 0.25, 0),
+    new THREE.Vector3(-0.35, -0.25, 0),
+    new THREE.Vector3(0, 0.05, 0),
+    new THREE.Vector3(0.35, 0.3, 0),
   ]);
 
   return (
@@ -130,8 +135,19 @@ export function PumpScene() {
 
 /** Affinity laws — speed ratio n₁ vs n₂. */
 export function AffinityScene() {
-  const leftFlow = linePath(new THREE.Vector3(-1.55, -0.45, 0), new THREE.Vector3(-0.55, 0.55, 0));
-  const rightFlow = linePath(new THREE.Vector3(0.55, -0.45, 0), new THREE.Vector3(1.55, 0.55, 0));
+  // Vertical suction → housing → discharge (particles stay on pipe axis).
+  const leftFlow = polyPath([
+    new THREE.Vector3(-1.05, -0.85, 0),
+    new THREE.Vector3(-1.05, -0.35, 0),
+    new THREE.Vector3(-1.05, 0.05, 0),
+    new THREE.Vector3(-1.05, 0.75, 0),
+  ]);
+  const rightFlow = polyPath([
+    new THREE.Vector3(1.05, -0.85, 0),
+    new THREE.Vector3(1.05, -0.35, 0),
+    new THREE.Vector3(1.05, 0.05, 0),
+    new THREE.Vector3(1.05, 0.75, 0),
+  ]);
 
   return (
     <SceneShell label="affinity laws" camera={[4.2, 2.2, 4]}>
@@ -141,12 +157,12 @@ export function AffinityScene() {
         <meshStandardMaterial color={HOUSING} metalness={0.3} roughness={0.45} />
       </mesh>
       <SpinningImpeller position={[-1.05, 0, 0.22]} speed={1.4} radius={0.22} blades={4} />
-      <mesh position={[-1.05, -0.55, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <mesh position={[-1.05, -0.55, 0]}>
         <cylinderGeometry args={[0.12, 0.12, 0.55, 14]} />
         <meshStandardMaterial color={PIPE} />
       </mesh>
-      <mesh position={[-1.05, 0.5, 0]}>
-        <cylinderGeometry args={[0.11, 0.11, 0.45, 14]} />
+      <mesh position={[-1.05, 0.55, 0]}>
+        <cylinderGeometry args={[0.11, 0.11, 0.55, 14]} />
         <meshStandardMaterial color={PIPE} />
       </mesh>
       <FlowParticles path={leftFlow} speed={0.25} count={22} color="#5ab8d0" seed={1} />
@@ -158,12 +174,12 @@ export function AffinityScene() {
         <meshStandardMaterial color={HOUSING} metalness={0.3} roughness={0.45} />
       </mesh>
       <SpinningImpeller position={[1.05, 0, 0.22]} speed={2.8} radius={0.22} blades={4} />
-      <mesh position={[1.05, -0.55, 0]} rotation={[0, 0, Math.PI / 2]}>
+      <mesh position={[1.05, -0.55, 0]}>
         <cylinderGeometry args={[0.12, 0.12, 0.55, 14]} />
         <meshStandardMaterial color={PIPE} />
       </mesh>
-      <mesh position={[1.05, 0.5, 0]}>
-        <cylinderGeometry args={[0.11, 0.11, 0.45, 14]} />
+      <mesh position={[1.05, 0.55, 0]}>
+        <cylinderGeometry args={[0.11, 0.11, 0.55, 14]} />
         <meshStandardMaterial color={PIPE} />
       </mesh>
       <FlowParticles path={rightFlow} speed={0.5} count={22} color="#7ad8f0" seed={2} />
@@ -233,8 +249,8 @@ function CavitationBubbles({
 
 /** NPSH — cavitation risk near pump inlet. */
 export function NpshScene() {
-  const inlet = linePath(new THREE.Vector3(-1.7, -0.25, 0), new THREE.Vector3(-0.4, -0.05, 0));
-  const outlet = linePath(new THREE.Vector3(0.4, 0.4, 0), new THREE.Vector3(1.4, 0.7, 0));
+  const inlet = linePath(new THREE.Vector3(-1.7, -0.2, 0), new THREE.Vector3(-0.45, -0.2, 0));
+  const outlet = linePath(new THREE.Vector3(0.45, 0.35, 0), new THREE.Vector3(1.4, 0.72, 0));
 
   return (
     <SceneShell label="NPSHₐ > NPSHᵣ" camera={[4, 2.3, 3.8]}>

@@ -1,0 +1,29 @@
+---
+description: Chapter template, KaTeX, schematic, and content schema
+globs: src/components/chapter/**/*.{tsx,ts}, src/content/**/*.{ts,tsx,mdx}, src/components/media/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+# Chapter & content
+
+## Fixed section order
+
+1. Title + chapter number  
+2. Governing equations (KaTeX, anchors `(n.m)` → `#eq-n-m`)  
+3. Scope of application  
+4. Assumptions and limitations  
+5. Nomenclature (Symbol · Meaning · Unit)  
+6. Formula concept diagram (SVG default; R3F only if justified)  
+7. Engineering note  
+8. Worked examples × 2 (Physical model → Equation → Substitution → Result → Interpretation)
+
+## Math & media
+
+- Equations: KaTeX only — never PNG from Word
+- Schematic: SVG 2D first; R3F lazy + pause off-screen + 2D fallback
+- Content lives in schema modules (`src/content/`), not long hard-coded JSX
+- Disclaimer: learning reference; design follows standards / manufacturer / review
+
+## DoD (chapter done)
+
+All 8 blocks · KaTeX + anchors · nomenclature complete · schematic + caption · 2 full examples · mobile TOC/table readable · no marketing cards on first viewport

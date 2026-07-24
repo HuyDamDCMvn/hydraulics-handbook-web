@@ -3,6 +3,7 @@
 import { useEffect, useState, type ComponentType } from "react";
 import dynamic from "next/dynamic";
 import type { Chapter } from "@/content/types";
+import { useT } from "@/i18n/LocaleProvider";
 
 function SchematicImg({ src, title }: { src: string; title: string }) {
   return (
@@ -144,6 +145,7 @@ const SCENE_BY_ID: Record<number, ComponentType> = {
 };
 
 export function SchematicMedia({ chapter }: { chapter: Chapter }) {
+  const t = useT();
   const [reduced, setReduced] = useState(false);
   const [webglOk, setWebglOk] = useState(true);
 
@@ -172,8 +174,7 @@ export function SchematicMedia({ chapter }: { chapter: Chapter }) {
       <div>
         <Scene />
         <p className="mt-2 text-xs text-ink-muted">
-          Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this
-          chapter (not a CFD solution).
+          {t.schematic.interactive} — {t.schematic.dragOrbit}.
         </p>
       </div>
     );

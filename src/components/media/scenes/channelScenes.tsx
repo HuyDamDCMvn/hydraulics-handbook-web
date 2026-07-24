@@ -48,12 +48,13 @@ export function ManningScene() {
 
 /** Side-by-side rectangular and trapezoidal channel cross-sections. */
 export function ChannelGeomScene() {
+  // Paths stay on channel centerlines (groups at x=±1.2, water at z=0).
   const rectPath = useMemo(
-    () => linePath(new THREE.Vector3(-2.0, 0.3, -0.9), new THREE.Vector3(-0.4, 0.3, -0.9), 0.04),
+    () => linePath(new THREE.Vector3(-1.75, 0.3, 0), new THREE.Vector3(-0.65, 0.3, 0), 0.04),
     [],
   );
   const trapPath = useMemo(
-    () => linePath(new THREE.Vector3(0.4, 0.28, 0.9), new THREE.Vector3(2.0, 0.28, 0.9), 0.04),
+    () => linePath(new THREE.Vector3(0.65, 0.28, 0), new THREE.Vector3(1.75, 0.28, 0), 0.04),
     [],
   );
 

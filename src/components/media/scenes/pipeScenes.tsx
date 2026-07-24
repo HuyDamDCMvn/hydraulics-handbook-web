@@ -2,6 +2,7 @@
 
 import { SceneShell, SceneLabel3D } from "@/components/media/SceneShell";
 import { FlowParticles, linePath, polyPath } from "@/components/media/FlowParticles";
+import { useMemo } from "react";
 import * as THREE from "three";
 
 const PIPE = "#7a9aa3";
@@ -132,39 +133,44 @@ export function FrictionScene() {
   );
 }
 
-/** Minor loss at a 90° elbow. */
+/** Minor loss at a 90° elbow (XY plane — readable from default camera). */
 export function MinorLossScene() {
-  const bend = polyPath([
-    new THREE.Vector3(-1.6, 0, 0),
-    new THREE.Vector3(-0.15, 0, 0),
-    new THREE.Vector3(0.05, 0.05, 0.15),
-    new THREE.Vector3(0.15, 0.12, 0.35),
-    new THREE.Vector3(0.2, 0.18, 0.7),
-    new THREE.Vector3(0.2, 0.22, 1.5),
-  ]);
+  const R = 0.4;
+  const r = 0.26;
+  const run = 1.35;
+  // Bend center at origin: inlet along −X, outlet along +Y
+  const bend = useMemo(() => {
+    const pts = [new THREE.Vector3(-(R + run), 0, 0), new THREE.Vector3(-R, 0, 0)];
+    for (let i = 1; i <= 8; i++) {
+      const a = Math.PI - (i / 8) * (Math.PI / 2); // π (−X) → π/2 (+Y)
+      pts.push(new THREE.Vector3(R * Math.cos(a), R * Math.sin(a), 0));
+    }
+    pts.push(new THREE.Vector3(0, R + run, 0));
+    return polyPath(pts);
+  }, []);
   const swirl = linePath(
-    new THREE.Vector3(-0.1, 0, 0.05),
-    new THREE.Vector3(0.15, 0.15, 0.55),
+    new THREE.Vector3(-R * 0.45, R * 0.2, 0.02),
+    new THREE.Vector3(-R * 0.15, R * 0.65, 0.04),
     0.1,
     2.5,
   );
 
   return (
-    <SceneShell label="h_m = K V²/(2g)" camera={[3.8, 2.4, 3.6]}>
-      <mesh position={[-0.9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[0.26, 0.26, 1.5, 22]} />
+    <SceneShell label="h_m = K V²/(2g)" camera={[4.2, 2.6, 4.2]}>
+      <mesh position={[-(R + run / 2), 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[r, r, run, 22]} />
         <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.45} />
       </mesh>
-      <mesh position={[0.2, 0, 0.85]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.26, 0.26, 1.5, 22]} />
+      <mesh position={[0, R + run / 2, 0]}>
+        <cylinderGeometry args={[r, r, run, 22]} />
         <meshStandardMaterial color={PIPE} metalness={0.25} roughness={0.45} />
       </mesh>
-      <mesh rotation={[0, -Math.PI / 2, 0]} position={[0.05, 0, 0.05]}>
-        <torusGeometry args={[0.45, 0.26, 12, 28, Math.PI / 2]} />
+      {/* Quarter-torus: −X → +Y */}
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <torusGeometry args={[R, r, 12, 28, Math.PI / 2]} />
         <meshStandardMaterial color="#2f8f8f" metalness={0.3} roughness={0.4} />
       </mesh>
-      {/* energy-loss swirl region */}
-      <mesh position={[0.12, 0.08, 0.35]}>
+      <mesh position={[-R * 0.35, R * 0.45, 0]}>
         <sphereGeometry args={[0.22, 12, 12]} />
         <meshStandardMaterial
           color="#e8a060"
@@ -176,7 +182,7 @@ export function MinorLossScene() {
       </mesh>
       <FlowParticles path={bend} speed={0.38} count={42} color={WATER} />
       <FlowParticles path={swirl} speed={0.55} count={18} color="#e8b070" size={0.04} seed={9} />
-      <SceneLabel3D position={[0.3, 1.1, 0.4]}>h_m = K V²/(2g)</SceneLabel3D>
+      <SceneLabel3D position={[0.2, 1.55, 0]}>h_m = K V²/(2g)</SceneLabel3D>
     </SceneShell>
   );
 }

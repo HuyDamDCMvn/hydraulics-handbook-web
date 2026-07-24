@@ -3,27 +3,29 @@
 import type { Chapter } from "@/content/types";
 import { animated, useSpring } from "@react-spring/web";
 import { useState } from "react";
-
-const sections = [
-  { id: "equations", label: "Equations" },
-  { id: "scope", label: "Scope" },
-  { id: "assumptions", label: "Assumptions" },
-  { id: "nomenclature", label: "Nomenclature" },
-  { id: "schematic", label: "Schematic" },
-  { id: "note", label: "Engineering note" },
-  { id: "examples", label: "Examples" },
-];
+import { useT } from "@/i18n/LocaleProvider";
 
 export function ChapterToc({ chapter }: { chapter: Chapter }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const drawer = useSpring({
     transform: open ? "translateY(0%)" : "translateY(110%)",
     config: { tension: 260, friction: 26 },
   });
 
+  const sections = [
+    { id: "equations", label: t.chapter.equationsNav },
+    { id: "scope", label: t.chapter.scope },
+    { id: "assumptions", label: t.chapter.assumptions },
+    { id: "nomenclature", label: t.chapter.nomenclature },
+    { id: "schematic", label: t.chapter.schematic },
+    { id: "note", label: t.chapter.note },
+    { id: "examples", label: t.chapter.examples },
+  ];
+
   const links = (
     <nav className="flex flex-col gap-2 text-sm">
-      <p className="font-semibold text-ink">On this page</p>
+      <p className="font-semibold text-ink">{t.chapter.onThisPage}</p>
       {sections.map((s) => (
         <a
           key={s.id}
@@ -34,7 +36,7 @@ export function ChapterToc({ chapter }: { chapter: Chapter }) {
           {s.label}
         </a>
       ))}
-      <p className="mt-3 font-semibold text-ink">Equations</p>
+      <p className="mt-3 font-semibold text-ink">{t.chapter.equationsNav}</p>
       {chapter.equations.map((eq) => (
         <a
           key={eq.id}
@@ -54,16 +56,16 @@ export function ChapterToc({ chapter }: { chapter: Chapter }) {
       <div className="lg:hidden">
         <button
           type="button"
-          className="fixed bottom-4 right-4 z-30 rounded border border-line bg-paper px-4 py-2 text-sm shadow"
+          className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-30 rounded border border-line bg-paper px-4 py-2 text-sm shadow"
           onClick={() => setOpen(true)}
         >
-          Chapter TOC
+          {t.chapter.onThisPage}
         </button>
         {open ? (
           <button
             type="button"
             className="fixed inset-0 z-40 bg-ink/35"
-            aria-label="Close TOC"
+            aria-label={t.close}
             onClick={() => setOpen(false)}
           />
         ) : null}
@@ -73,9 +75,11 @@ export function ChapterToc({ chapter }: { chapter: Chapter }) {
           aria-hidden={!open}
         >
           <div className="mb-3 flex justify-between">
-            <span className="font-display">Chapter {chapter.id}</span>
+            <span className="font-display">
+              {t.chapter.chapter} {chapter.id}
+            </span>
             <button type="button" onClick={() => setOpen(false)}>
-              Close
+              {t.close}
             </button>
           </div>
           {links}

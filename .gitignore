@@ -41,3 +41,8 @@ yarn-error.log*
 next-env.d.ts
 
 .vercel
+
+# Local Blender toolchain (large binaries / zip)
+/tools/blender-*/
+/tools/*.zip
+/tools/uv/

@@ -1,34 +1,63 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useT } from "@/i18n/LocaleProvider";
 
 type CalcId = "pressure" | "hydrostatic" | "darcy" | "pump" | "reynolds" | "hammer";
 
 const G = 9.81;
 const RHO_WATER = 1000;
 
+const SUPER: Record<string, string> = {
+  "0": "⁰",
+  "1": "¹",
+  "2": "²",
+  "3": "³",
+  "4": "⁴",
+  "5": "⁵",
+  "6": "⁶",
+  "7": "⁷",
+  "8": "⁸",
+  "9": "⁹",
+  "+": "⁺",
+  "-": "⁻",
+};
+
+function toSuper(exp: number): string {
+  return String(exp)
+    .split("")
+    .map((ch) => SUPER[ch] ?? ch)
+    .join("");
+}
+
+/** Engineering display: 1000, 9.81×10³ — avoid raw 1.000e+3 */
 function roundEng(n: number, digits = 4): string {
   if (!Number.isFinite(n)) return "—";
-  if (Math.abs(n) >= 1000 || (Math.abs(n) > 0 && Math.abs(n) < 0.01)) {
-    return n.toExponential(3);
+  const abs = Math.abs(n);
+  if (abs !== 0 && (abs >= 1e5 || abs < 0.01)) {
+    const exp = Math.floor(Math.log10(abs));
+    const mant = n / 10 ** exp;
+    return `${Number(mant.toPrecision(3))}×10${toSuper(exp)}`;
   }
+  if (abs >= 100) return String(Number(n.toFixed(abs >= 1000 ? 0 : 2)));
   return String(Number(n.toPrecision(digits)));
 }
 
 export function CalculatorsPanel() {
   const [tab, setTab] = useState<CalcId>("pressure");
+  const t = useT();
 
   return (
     <div>
       <div className="flex flex-wrap gap-2">
         {(
           [
-            ["pressure", "Density / pressure"],
-            ["hydrostatic", "Hydrostatic head"],
-            ["reynolds", "Reynolds"],
-            ["darcy", "Darcy–Weisbach"],
-            ["pump", "Pump power"],
-            ["hammer", "Joukowsky"],
+            ["pressure", t.calculators.tabs.pressure],
+            ["hydrostatic", t.calculators.tabs.hydrostatic],
+            ["reynolds", t.calculators.tabs.reynolds],
+            ["darcy", t.calculators.tabs.darcy],
+            ["pump", t.calculators.tabs.pump],
+            ["hammer", t.calculators.tabs.hammer],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -46,15 +75,17 @@ export function CalculatorsPanel() {
         ))}
       </div>
 
-      <div className="mt-6 border border-line bg-white/55 p-4 md:p-6">
-        {tab === "pressure" && <PressureCalc />}
-        {tab === "hydrostatic" && <HydroCalc />}
-        {tab === "reynolds" && <ReynoldsCalc />}
-        {tab === "darcy" && <DarcyCalc />}
-        {tab === "pump" && <PumpCalc />}
-        {tab === "hammer" && <HammerCalc />}
-        <p className="mt-6 text-xs text-ink-muted">
-          SI units only. Learning aid — not a substitute for standards or engineering review.
+      <div className="mt-5 border border-line bg-white/55 p-4 md:grid md:grid-cols-[1fr_auto] md:gap-8 md:p-6">
+        <div>
+          {tab === "pressure" && <PressureCalc />}
+          {tab === "hydrostatic" && <HydroCalc />}
+          {tab === "reynolds" && <ReynoldsCalc />}
+          {tab === "darcy" && <DarcyCalc />}
+          {tab === "pump" && <PumpCalc />}
+          {tab === "hammer" && <HammerCalc />}
+        </div>
+        <p className="mt-6 text-xs text-ink-muted md:mt-0 md:max-w-[14rem] md:border-l md:border-line md:pl-6">
+          {t.calculators.disclaimer}
         </p>
       </div>
     </div>
@@ -98,6 +129,7 @@ function Result({ label, value }: { label: string; value: string }) {
 }
 
 function PressureCalc() {
+  const t = useT();
   const [m, setM] = useState("2500");
   const [V, setV] = useState("2.5");
   const [F, setF] = useState("12000");
@@ -110,10 +142,10 @@ function PressureCalc() {
   }, [m, V, F, A]);
   return (
     <div className="grid gap-3 md:grid-cols-2">
-      <Field label="Mass m" unit="kg" value={m} onChange={setM} />
-      <Field label="Volume V" unit="m³" value={V} onChange={setV} />
-      <Field label="Force F" unit="N" value={F} onChange={setF} />
-      <Field label="Area A" unit="m²" value={A} onChange={setA} />
+      <Field label={t.calculators.fields.mass} unit="kg" value={m} onChange={setM} />
+      <Field label={t.calculators.fields.volume} unit="m³" value={V} onChange={setV} />
+      <Field label={t.calculators.fields.force} unit="N" value={F} onChange={setF} />
+      <Field label={t.calculators.fields.area} unit="m²" value={A} onChange={setA} />
       <div className="md:col-span-2">
         <Result label="ρ = m/V" value={`${roundEng(out.rho)} kg/m³`} />
         <Result label="γ = ρg" value={`${roundEng(out.gamma)} N/m³`} />
@@ -124,6 +156,7 @@ function PressureCalc() {
 }
 
 function HydroCalc() {
+  const t = useT();
   const [h, setH] = useState("6");
   const [p, setP] = useState("245000");
   const out = useMemo(() => {
@@ -133,8 +166,8 @@ function HydroCalc() {
   }, [h, p]);
   return (
     <div className="grid gap-3 md:grid-cols-2">
-      <Field label="Depth h" unit="m" value={h} onChange={setH} />
-      <Field label="Pressure p" unit="Pa" value={p} onChange={setP} />
+      <Field label={t.calculators.fields.depth} unit="m" value={h} onChange={setH} />
+      <Field label={t.calculators.fields.pressure} unit="Pa" value={p} onChange={setP} />
       <div className="md:col-span-2">
         <Result label="p = ρgh (gauge)" value={`${roundEng(out.pGauge / 1000)} kPa`} />
         <Result label="h_p = p/γ" value={`${roundEng(out.head)} m`} />
@@ -144,6 +177,7 @@ function HydroCalc() {
 }
 
 function ReynoldsCalc() {
+  const t = useT();
   const [V, setV] = useState("1.5");
   const [D, setD] = useState("0.2");
   const [nu, setNu] = useState("1e-6");
@@ -151,12 +185,12 @@ function ReynoldsCalc() {
     () => (Number(V) * Number(D)) / Number(nu),
     [V, D, nu],
   );
-  const regime = Re < 2300 ? "laminar (typical)" : Re > 4000 ? "turbulent (typical)" : "transitional";
+  const regime = Re < 2300 ? "laminar" : Re > 4000 ? "turbulent" : "transitional";
   return (
     <div className="grid gap-3 md:grid-cols-3">
-      <Field label="Velocity V" unit="m/s" value={V} onChange={setV} />
-      <Field label="Diameter D" unit="m" value={D} onChange={setD} />
-      <Field label="Kinematic viscosity ν" unit="m²/s" value={nu} onChange={setNu} />
+      <Field label={t.calculators.fields.velocity} unit="m/s" value={V} onChange={setV} />
+      <Field label={t.calculators.fields.diameter} unit="m" value={D} onChange={setD} />
+      <Field label={t.calculators.fields.viscosity} unit="m²/s" value={nu} onChange={setNu} />
       <div className="md:col-span-3">
         <Result label="Re = VD/ν" value={`${roundEng(Re)} · ${regime}`} />
       </div>
@@ -165,6 +199,7 @@ function ReynoldsCalc() {
 }
 
 function DarcyCalc() {
+  const t = useT();
   const [f, setF] = useState("0.02");
   const [L, setL] = useState("100");
   const [D, setD] = useState("0.2");
@@ -175,10 +210,10 @@ function DarcyCalc() {
   );
   return (
     <div className="grid gap-3 md:grid-cols-2">
-      <Field label="Friction factor f" unit="—" value={f} onChange={setF} />
-      <Field label="Length L" unit="m" value={L} onChange={setL} />
-      <Field label="Diameter D" unit="m" value={D} onChange={setD} />
-      <Field label="Velocity V" unit="m/s" value={V} onChange={setV} />
+      <Field label={t.calculators.fields.friction} unit="—" value={f} onChange={setF} />
+      <Field label={t.calculators.fields.length} unit="m" value={L} onChange={setL} />
+      <Field label={t.calculators.fields.diameter} unit="m" value={D} onChange={setD} />
+      <Field label={t.calculators.fields.velocity} unit="m/s" value={V} onChange={setV} />
       <div className="md:col-span-2">
         <Result label="h_f = f(L/D)V²/(2g)" value={`${roundEng(hf)} m`} />
       </div>
@@ -187,6 +222,7 @@ function DarcyCalc() {
 }
 
 function PumpCalc() {
+  const t = useT();
   const [Q, setQ] = useState("0.05");
   const [H, setH] = useState("30");
   const [eta, setEta] = useState("0.75");
@@ -196,9 +232,9 @@ function PumpCalc() {
   );
   return (
     <div className="grid gap-3 md:grid-cols-3">
-      <Field label="Discharge Q" unit="m³/s" value={Q} onChange={setQ} />
-      <Field label="Head H" unit="m" value={H} onChange={setH} />
-      <Field label="Efficiency η" unit="—" value={eta} onChange={setEta} />
+      <Field label={t.calculators.fields.discharge} unit="m³/s" value={Q} onChange={setQ} />
+      <Field label={t.calculators.fields.head} unit="m" value={H} onChange={setH} />
+      <Field label={t.calculators.fields.efficiency} unit="—" value={eta} onChange={setEta} />
       <div className="md:col-span-3">
         <Result label="P = ρgQH/η" value={`${roundEng(P / 1000)} kW`} />
       </div>
@@ -207,13 +243,14 @@ function PumpCalc() {
 }
 
 function HammerCalc() {
+  const t = useT();
   const [c, setC] = useState("1000");
   const [dV, setDV] = useState("1.2");
   const dp = useMemo(() => RHO_WATER * Number(c) * Number(dV), [c, dV]);
   return (
     <div className="grid gap-3 md:grid-cols-2">
-      <Field label="Wave speed c" unit="m/s" value={c} onChange={setC} />
-      <Field label="Velocity change ΔV" unit="m/s" value={dV} onChange={setDV} />
+      <Field label={t.calculators.fields.wavespeed} unit="m/s" value={c} onChange={setC} />
+      <Field label={t.calculators.fields.deltaV} unit="m/s" value={dV} onChange={setDV} />
       <div className="md:col-span-2">
         <Result label="Δp = ρ c ΔV" value={`${roundEng(dp / 1e6)} MPa`} />
       </div>

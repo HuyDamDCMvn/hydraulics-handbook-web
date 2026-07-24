@@ -1,0 +1,26 @@
+---
+description: Motion stack budget — which library where
+globs: src/components/**/*.{tsx,ts}, src/app/**/*.{tsx,ts}
+alwaysApply: false
+---
+
+# Motion budget
+
+Prefer in order: **CSS → AutoAnimate → React Spring → GSAP → Lottie → R3F**.
+
+One UI surface = one motion engine. Honor `prefers-reduced-motion`.
+
+| Need | Use |
+| --- | --- |
+| List / filter / TOC DOM add\|remove\|move | AutoAnimate (`useAutoAnimate`) |
+| Hover, `:target` equation highlight, copy feedback | CSS only |
+| Mobile TOC drawer, calculator knobs / drag | React Spring (+ use-gesture if needed) |
+| Landing / `/guide` scroll story (max 1–2 pin scenes) | GSAP + `@gsap/react` `useGSAP` + `matchMedia` |
+| Icon / empty state (≤3 JSON, optional) | Lottie + static SVG fallback |
+| Spatial schematic that teaches better in 3D | R3F lazy; else SVG 2D |
+
+## Forbidden
+
+- GSAP / Lottie / parallax inside chapter body KaTeX
+- Stacking AutoAnimate + Spring + Lottie on the same region
+- `window.addEventListener('scroll')` — use ScrollTrigger / CSS / IntersectionObserver
