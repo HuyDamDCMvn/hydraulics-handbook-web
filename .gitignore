@@ -51,5 +51,12 @@ next-env.d.ts
 # Local QA / capture artifacts
 /.qa-schematics/
 /.qa-locale/
-/assets/
+/assets/*
+!/assets/blender/
+/assets/blender/*
+!/assets/blender/README.md
+!/assets/blender/catalog.json
+!/assets/blender/library/
+!/assets/blender/library/**
+*.blend1
 *.log

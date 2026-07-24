@@ -1,0 +1,29 @@
+{
+  "id": "pumps/cutaway-flow",
+  "stem": "pump-flow",
+  "title": {
+    "en": "Centrifugal pump cutaway with flow markers",
+    "vi": "Bơm ly tâm cắt mở + marker dòng chảy"
+  },
+  "category": "pumps",
+  "tags": ["pump", "cutaway", "flow", "impeller", "animation", "reusable"],
+  "reusable": true,
+  "source": "source/pump-flow.blend",
+  "web": "web/pump-flow.glb",
+  "previews": {
+    "shaded": "previews/shaded.png"
+  },
+  "objects": [
+    "OBJ_Pump_Casing",
+    "OBJ_Pipe_Suction",
+    "OBJ_Pipe_Discharge",
+    "OBJ_Impeller"
+  ],
+  "animations": ["ACT_Impeller_Spin", "ACT_Flow_Loop"],
+  "hotspots": [
+    "EMP_Hotspot_Suction",
+    "EMP_Hotspot_Discharge",
+    "EMP_Hotspot_Casing"
+  ],
+  "buildScript": "scripts/blender/build_pump_flow.py"
+}

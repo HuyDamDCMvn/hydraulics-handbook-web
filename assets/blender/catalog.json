@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "updatedAt": "2026-07-24T06:15:03Z",
+  "root": "assets/blender/library",
+  "layout": [
+    "source",
+    "web",
+    "previews",
+    "meta"
+  ],
+  "categories": [
+    "cylinders",
+    "fittings",
+    "motors",
+    "pumps",
+    "valves"
+  ],
+  "assets": [
+    {
+      "id": "pumps/close-coupled-motor",
+      "stem": "pump-motor",
+      "title": {
+        "en": "Close-coupled centrifugal pump + motor",
+        "vi": "Bơm ly tâm gắn motor (close-coupled)"
+      },
+      "category": "pumps",
+      "tags": [
+        "pump",
+        "motor",
+        "centrifugal",
+        "finned-motor",
+        "industrial",
+        "reusable"
+      ],
+      "reusable": true,
+      "reference": "meta/reference-photo.png",
+      "source": "source/pump-motor.blend",
+      "web": "web/pump-motor.glb",
+      "previews": {
+        "shaded": "previews/shaded.png",
+        "wireframe": "previews/wireframe.png"
+      },
+      "objects": [
+        "OBJ_PumpMotor_Body",
+        "OBJ_Motor_Nameplate",
+        "OBJ_Motor_JunctionBox",
+        "OBJ_Inlet_Flange",
+        "OBJ_Discharge_Flange"
+      ],
+      "buildScript": "scripts/blender/build_pump_motor.py",
+      "path": "library/pumps/close-coupled-motor"
+    },
+    {
+      "id": "pumps/cutaway-flow",
+      "stem": "pump-flow",
+      "title": {
+        "en": "Centrifugal pump cutaway with flow markers",
+        "vi": "Bơm ly tâm cắt mở + marker dòng chảy"
+      },
+      "category": "pumps",
+      "tags": [
+        "pump",
+        "cutaway",
+        "flow",
+        "impeller",
+        "animation",
+        "reusable"
+      ],
+      "reusable": true,
+      "source": "source/pump-flow.blend",
+      "web": "web/pump-flow.glb",
+      "previews": {
+        "shaded": "previews/shaded.png"
+      },
+      "objects": [
+        "OBJ_Pump_Casing",
+        "OBJ_Pipe_Suction",
+        "OBJ_Pipe_Discharge",
+        "OBJ_Impeller"
+      ],
+      "animations": [
+        "ACT_Impeller_Spin",
+        "ACT_Flow_Loop"
+      ],
+      "hotspots": [
+        "EMP_Hotspot_Suction",
+        "EMP_Hotspot_Discharge",
+        "EMP_Hotspot_Casing"
+      ],
+      "buildScript": "scripts/blender/build_pump_flow.py",
+      "path": "library/pumps/cutaway-flow"
+    },
+    {
+      "id": "pumps/fire-pump-01",
+      "stem": "fire-pump-01",
+      "title": {
+        "en": "Fire pump 01",
+        "vi": "Bơm chữa cháy 01"
+      },
+      "category": "pumps",
+      "tags": [
+        "pump",
+        "motor",
+        "centrifugal",
+        "fire-pump",
+        "skid",
+        "coupling-guard",
+        "reusable"
+      ],
+      "reusable": true,
+      "reference": "meta/reference-photo.png",
+      "source": "source/fire-pump-01.blend",
+      "web": "web/fire-pump-01.glb",
+      "previews": {
+        "shaded": "previews/shaded.png",
+        "wireframe": "previews/wireframe.png"
+      },
+      "objects": [
+        "OBJ_FirePump_01",
+        "OBJ_Coupling_Guard",
+        "OBJ_Inlet_Flange",
+        "OBJ_Discharge_Flange",
+        "OBJ_Motor_JunctionBox",
+        "OBJ_Skid_Base"
+      ],
+      "buildScript": "scripts/blender/build_fire_pump_01.py",
+      "path": "library/pumps/fire-pump-01"
+    }
+  ]
+}

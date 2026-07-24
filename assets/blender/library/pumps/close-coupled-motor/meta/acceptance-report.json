@@ -1,0 +1,21 @@
+{
+  "result": "PASS",
+  "checks": {
+    "blend_saved": true,
+    "preview_rendered": true,
+    "wireframe_rendered": true,
+    "glb_exported": true,
+    "glb_size_bytes": 209540,
+    "glb_under_5mb": true,
+    "triangles": 7842,
+    "triangles_under_100k": true,
+    "materials": 4,
+    "blender_version": "4.5.10 LTS"
+  },
+  "files": {
+    "blend": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/close-coupled-motor/source/pump-motor.blend",
+    "glb": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/close-coupled-motor/web/pump-motor.glb",
+    "preview": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/close-coupled-motor/previews/shaded.png",
+    "wireframe": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/close-coupled-motor/previews/wireframe.png"
+  }
+}

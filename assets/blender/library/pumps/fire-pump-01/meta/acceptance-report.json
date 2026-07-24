@@ -1,0 +1,21 @@
+{
+  "result": "PASS",
+  "checks": {
+    "blend_saved": true,
+    "preview_rendered": true,
+    "wireframe_rendered": true,
+    "glb_exported": true,
+    "glb_size_bytes": 181892,
+    "glb_under_5mb": true,
+    "triangles": 6864,
+    "triangles_under_100k": true,
+    "materials": 6,
+    "blender_version": "4.5.10 LTS"
+  },
+  "files": {
+    "blend": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/fire-pump-01/source/fire-pump-01.blend",
+    "glb": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/fire-pump-01/web/fire-pump-01.glb",
+    "preview": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/fire-pump-01/previews/shaded.png",
+    "wireframe": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/library/pumps/fire-pump-01/previews/wireframe.png"
+  }
+}

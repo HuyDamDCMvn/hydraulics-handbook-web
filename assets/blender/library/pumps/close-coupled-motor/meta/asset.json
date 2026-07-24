@@ -1,0 +1,33 @@
+{
+  "id": "pumps/close-coupled-motor",
+  "stem": "pump-motor",
+  "title": {
+    "en": "Close-coupled centrifugal pump + motor",
+    "vi": "B\u01a1m ly t\u00e2m g\u1eafn motor (close-coupled)"
+  },
+  "category": "pumps",
+  "tags": [
+    "pump",
+    "motor",
+    "centrifugal",
+    "finned-motor",
+    "industrial",
+    "reusable"
+  ],
+  "reusable": true,
+  "reference": "meta/reference-photo.png",
+  "source": "source/pump-motor.blend",
+  "web": "web/pump-motor.glb",
+  "previews": {
+    "shaded": "previews/shaded.png",
+    "wireframe": "previews/wireframe.png"
+  },
+  "objects": [
+    "OBJ_PumpMotor_Body",
+    "OBJ_Motor_Nameplate",
+    "OBJ_Motor_JunctionBox",
+    "OBJ_Inlet_Flange",
+    "OBJ_Discharge_Flange"
+  ],
+  "buildScript": "scripts/blender/build_pump_motor.py"
+}

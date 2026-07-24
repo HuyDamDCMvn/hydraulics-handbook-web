@@ -1,0 +1,50 @@
+{
+  "asset": "pump-flow.glb",
+  "coordinateSystem": "Blender Z-up; converted by glTF exporter",
+  "purpose": "Acceptance test: centrifugal pump with suction/discharge and internal flow",
+  "objects": [
+    {
+      "name": "OBJ_Pump_Casing",
+      "events": [
+        "pointerenter",
+        "pointerleave",
+        "click"
+      ],
+      "animations": [
+        "ACT_Impeller_Spin"
+      ]
+    },
+    {
+      "name": "OBJ_Impeller",
+      "events": [],
+      "animations": [
+        "ACT_Impeller_Spin"
+      ]
+    },
+    {
+      "name": "OBJ_Flow_Bead_01",
+      "events": [],
+      "animations": [
+        "ACT_Flow_Loop"
+      ]
+    }
+  ],
+  "hotspots": [
+    {
+      "name": "EMP_Hotspot_Suction",
+      "label": "Suction inlet"
+    },
+    {
+      "name": "EMP_Hotspot_Discharge",
+      "label": "Discharge outlet"
+    },
+    {
+      "name": "EMP_Hotspot_Casing",
+      "label": "Pump casing"
+    }
+  ],
+  "pipes": {
+    "suction": "OBJ_Pipe_Suction",
+    "discharge": "OBJ_Pipe_Discharge"
+  }
+}

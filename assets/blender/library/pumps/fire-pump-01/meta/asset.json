@@ -1,0 +1,35 @@
+{
+  "id": "pumps/fire-pump-01",
+  "stem": "fire-pump-01",
+  "title": {
+    "en": "Fire pump 01",
+    "vi": "B\u01a1m ch\u1eefa ch\u00e1y 01"
+  },
+  "category": "pumps",
+  "tags": [
+    "pump",
+    "motor",
+    "centrifugal",
+    "fire-pump",
+    "skid",
+    "coupling-guard",
+    "reusable"
+  ],
+  "reusable": true,
+  "reference": "meta/reference-photo.png",
+  "source": "source/fire-pump-01.blend",
+  "web": "web/fire-pump-01.glb",
+  "previews": {
+    "shaded": "previews/shaded.png",
+    "wireframe": "previews/wireframe.png"
+  },
+  "objects": [
+    "OBJ_FirePump_01",
+    "OBJ_Coupling_Guard",
+    "OBJ_Inlet_Flange",
+    "OBJ_Discharge_Flange",
+    "OBJ_Motor_JunctionBox",
+    "OBJ_Skid_Base"
+  ],
+  "buildScript": "scripts/blender/build_fire_pump_01.py"
+}

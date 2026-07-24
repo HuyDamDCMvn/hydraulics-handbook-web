@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "checks": {
+    "blend_saved": true,
+    "preview_rendered": true,
+    "glb_exported": true,
+    "glb_size_bytes": 178428,
+    "glb_under_5mb": true,
+    "triangles": 5220,
+    "triangles_under_100k": true,
+    "materials": 6,
+    "flow_beads": 12,
+    "animations": [
+      "ACT_Impeller_Spin",
+      "ACT_Flow_Loop"
+    ],
+    "blender_version": "4.5.10 LTS"
+  },
+  "files": {
+    "blend": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/pump-flow/pump-flow.blend",
+    "glb": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/pump-flow/pump-flow.glb",
+    "preview": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/pump-flow/pump-flow-preview.png",
+    "manifest": "F:/02.Study/TechTraining/hydraulics-handbook-web/assets/blender/pump-flow/interaction-manifest.json"
+  }
+}

@@ -1,0 +1,135 @@
+[
+  {
+    "page": "/",
+    "h1": "Hydraulics Formula Handbook",
+    "h1Opacity": "1",
+    "h1Visible": true,
+    "cta": 1
+  },
+  {
+    "page": "/chapters",
+    "showing": "Showing 24 of 24 chapters",
+    "afterDarcy": "Showing 4 of 24 chapters",
+    "listCount": 4
+  },
+  {
+    "id": 1,
+    "equations": true,
+    "scope": true,
+    "assumptions": true,
+    "nomenclature": true,
+    "schematic": true,
+    "note": true,
+    "examples": 2,
+    "katex": 15,
+    "eqAnchor": 9
+  },
+  {
+    "id": 5,
+    "equations": true,
+    "scope": true,
+    "assumptions": true,
+    "nomenclature": true,
+    "schematic": true,
+    "note": true,
+    "examples": 2,
+    "katex": 11,
+    "eqAnchor": 6
+  },
+  {
+    "id": 9,
+    "equations": true,
+    "scope": true,
+    "assumptions": true,
+    "nomenclature": true,
+    "schematic": true,
+    "note": true,
+    "examples": 2,
+    "katex": 12,
+    "eqAnchor": 6
+  },
+  {
+    "id": 14,
+    "equations": true,
+    "scope": true,
+    "assumptions": true,
+    "nomenclature": true,
+    "schematic": true,
+    "note": true,
+    "examples": 2,
+    "katex": 14,
+    "eqAnchor": 9
+  },
+  {
+    "id": 24,
+    "equations": true,
+    "scope": true,
+    "assumptions": true,
+    "nomenclature": true,
+    "schematic": true,
+    "note": true,
+    "examples": 2,
+    "katex": 16,
+    "eqAnchor": 9
+  },
+  {
+    "schematic": 1,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 1.1. Formula concept diagram ρ, γ, p=F/A ρ, γ, p=F/A Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Control volume of fluid:"
+  },
+  {
+    "schematic": 2,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 2.1. Formula concept diagram p = ρ g h p = ρ g h Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Hydrostatic column: free-sur"
+  },
+  {
+    "schematic": 5,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 5.1. Formula concept diagram A₁V₁ = A₂V₂ A₁V₁ = A₂V₂ Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Streamtube continuity: A"
+  },
+  {
+    "schematic": 8,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 8.1. Formula concept diagram Laminar Turbulent Re Re Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Pipe flow regimes: lamin"
+  },
+  {
+    "schematic": 13,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 13.1. Formula concept diagram ΣF = ρQ(Vout−Vin) ΣF = ρQ(Vout−Vin) Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Control vol"
+  },
+  {
+    "schematic": 16,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 16.1. Formula concept diagram NPSHₐ > NPSHᵣ NPSHₐ > NPSHᵣ Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Open sump, suction "
+  },
+  {
+    "schematic": 20,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 20.1. Formula concept diagram y2/y1 from Fr1 Hydraulic jump Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Hydraulic jump fr"
+  },
+  {
+    "schematic": 21,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 21.1. Formula concept diagram Q ∝ L H^(3/2) Sharp-crested weir Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Sharp-crested "
+  },
+  {
+    "schematic": 23,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 23.1. Formula concept diagram Δp = ρ c ΔV Water hammer surge Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Valve closure la"
+  },
+  {
+    "schematic": 24,
+    "bg": "rgb(244, 241, 234)",
+    "canvas": true,
+    "text": "Figure 24.1. Formula concept diagram q = −k i A Darcy seepage Interactive 3D flow schematic — drag to orbit. Reflects the governing physics of this chapter (not a CFD solution). Porous sample with hea"
+  }
+]
