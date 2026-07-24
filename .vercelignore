@@ -3,10 +3,10 @@ node_modules
 out
 build
 coverage
-tools
+/tools
 .qa-schematics
 .qa-locale
-assets
+/assets
 scripts/blender
 *.log
 *.zip
